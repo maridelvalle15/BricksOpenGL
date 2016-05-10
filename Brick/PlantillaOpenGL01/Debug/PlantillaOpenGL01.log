@@ -1,35 +1,35 @@
-﻿Build started 10/5/2016 6:01:18 p. m..
-     1>Project "C:\Users\Raul\Desktop\Brick\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" on node 2 (Build target(s)).
+﻿Build started 10/5/2016 6:40:38 p. m..
+     1>Project "C:\Users\Raul\Documents\Graficas\BricksOpenGL\Brick\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\dev\opengl\freeglut\include /I"C:\dev\opengl\glew-1.7.0\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(37): warning C4244: 'argumento' : conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(44): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(44): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(45): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(45): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(47): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(47): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(48): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(48): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(50): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(50): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(51): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(51): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(53): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(53): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(54): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(54): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(72): warning C4244: '=' : conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(234): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(235): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(236): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\raul\desktop\brick\plantillaopengl01\main.cpp(237): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(37): warning C4244: 'argumento' : conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(44): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(44): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(45): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(45): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(47): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(47): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(48): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(48): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(50): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(50): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(51): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(51): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(53): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(53): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(54): warning C4244: 'argumento' : conversión de 'int' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(54): warning C4305: 'argumento' : truncamiento de 'double' a 'GLfloat'
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(72): warning C4244: '=' : conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(236): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(237): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(238): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\raul\documents\graficas\bricksopengl\brick\plantillaopengl01\main.cpp(239): warning C4244: '=' : conversión de 'GLdouble' a 'GLfloat'; posible pérdida de datos
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Raul\Desktop\Brick\Debug\Brick.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /LIBPATH:C:\dev\opengl\freeglut\lib /LIBPATH:"C:\dev\opengl\glew-1.7.0\lib" glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Raul\Desktop\Brick\Debug\Brick.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Raul\Desktop\Brick\Debug\Brick.lib" /MACHINE:X86 Debug\main.obj
-         PlantillaOpenGL01.vcxproj -> C:\Users\Raul\Desktop\Brick\Debug\Brick.exe
-     1>Done Building Project "C:\Users\Raul\Desktop\Brick\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" (Build target(s)).
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Raul\Documents\Graficas\BricksOpenGL\Brick\Debug\Brick.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /LIBPATH:C:\dev\opengl\freeglut\lib /LIBPATH:"C:\dev\opengl\glew-1.7.0\lib" glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Raul\Documents\Graficas\BricksOpenGL\Brick\Debug\Brick.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Raul\Documents\Graficas\BricksOpenGL\Brick\Debug\Brick.lib" /MACHINE:X86 Debug\main.obj
+         PlantillaOpenGL01.vcxproj -> C:\Users\Raul\Documents\Graficas\BricksOpenGL\Brick\Debug\Brick.exe
+     1>Done Building Project "C:\Users\Raul\Documents\Graficas\BricksOpenGL\Brick\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.22
+Time Elapsed 00:00:02.32

@@ -113,6 +113,8 @@ struct Ladrillo{
 	bool active;
 };
 
+Ladrillo ladrillos[5][7] = {};
+
 void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
 	for (int j = 1; j <= max_columna; j++){
 		for (int i = 1; i <= max_fila; i++){
@@ -121,14 +123,14 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 			ladrillo.xneg = ladrilloXneg;
 			ladrillo.ypos = ladrilloYpos;
 			ladrillo.yneg = ladrilloYneg;
-			ladrillo.active = false;
-			if (ladrillo.active == false){
+			ladrillo.active = true;
+			ladrillos[j][i] = ladrillo;
 			dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
-			}
 			ladrillosXneg[j][i] = ladrilloXneg;
 			ladrillosXpos[j][i] = ladrilloXpos;	
 			ladrillosYneg[j][i] = ladrilloYneg;
 			ladrillosYpos[j][i] = ladrilloYpos;
+
 			ladrilloXneg += 2.8f;
 			ladrilloXpos += 2.8f;
 		}
