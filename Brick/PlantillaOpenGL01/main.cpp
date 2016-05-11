@@ -99,13 +99,8 @@ float ladrilloXpos = -9.0f;
 float ladrilloYpos = 9.0f;
 float ladrilloYneg = 8.5f;
 
-float ladrillosXneg[5][7];
-float ladrillosXpos[5][7];
-float ladrillosYneg[5][7];
-float ladrillosYpos[5][7];
-int contador = 0;
-
 struct Ladrillo{
+	Ladrillo() : active(true){}
 	float xpos;
 	float xneg;
 	float ypos;
@@ -114,23 +109,20 @@ struct Ladrillo{
 };
 
 Ladrillo ladrillos[5][7] = {};
+Ladrillo ladrillo = Ladrillo();
 
 void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
 	for (int j = 1; j <= max_columna; j++){
 		for (int i = 1; i <= max_fila; i++){
-			Ladrillo ladrillo = Ladrillo();
 			ladrillo.xpos = ladrilloXpos;
 			ladrillo.xneg = ladrilloXneg;
 			ladrillo.ypos = ladrilloYpos;
 			ladrillo.yneg = ladrilloYneg;
-			ladrillo.active = true;
 			ladrillos[j][i] = ladrillo;
+			if (ladrillos[j][i].active==false){
+				exit(0);
+			}
 			dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
-			ladrillosXneg[j][i] = ladrilloXneg;
-			ladrillosXpos[j][i] = ladrilloXpos;	
-			ladrillosYneg[j][i] = ladrilloYneg;
-			ladrillosYpos[j][i] = ladrilloYpos;
-
 			ladrilloXneg += 2.8f;
 			ladrilloXpos += 2.8f;
 		}
@@ -144,12 +136,13 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 void chocarLadrillos(){
 	for (int j = 1; j <= max_columna; j++){
 		for (int i = 1; i <= max_fila; i++){
-			if ((ladrillosXneg[j][i] < ballX && ladrillosXpos[j][i] > ballX && ladrillosYneg[j][i] < ballY) ){
+			if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg < ballY) ){
 				ySpeed = -ySpeed;
 			}
-			else if ((ladrillosXneg[j][i] >ballX && ladrillosYneg[j][i] < ballY && ladrillosYpos[j][i] > ballY) ){
+			else if ((ladrillos[j][i].xneg >ballX && ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY) ){
 				xSpeed = -xSpeed;
 				ySpeed = -ySpeed;
+				ladrillos[j][i].active = false;
 			}
 		}
 	}
@@ -182,6 +175,7 @@ void render(){
 	glutSwapBuffers();
 
 	chocarLadrillos();
+	dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
 
 	//Animacion de la bola
 	ballX += xSpeed;
