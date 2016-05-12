@@ -3,6 +3,9 @@
 #include <Math.h>
 #include <GL\glew.h>
 #include <GL\freeglut.h>
+#include <windows.h>
+#include <mmsystem.h>
+#include <stdio.h>
 #define PI 3.1415926535897932384626433832795
 
 GLfloat ballRadius = 0.3f;
@@ -169,9 +172,9 @@ void render(){
 	glLoadIdentity();
 	
 	glPushMatrix();
-		//dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
+	 dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
 	glPopMatrix();
-
+	/*
 	glPushMatrix();
 		glPointSize(1.0f);
 		glColor3f(1.0f,0.0f,0.0f);
@@ -205,7 +208,7 @@ void render(){
 			glVertex2f(ancho+0.27,ladrilloYneg);
 		glEnd();
 	glPopMatrix();
-
+	*/
 	//Dibujar barra
 	glPushMatrix();
 		//ejesCoordenada(1.0);
@@ -347,6 +350,19 @@ int main (int argc, char** argv) {
 		fprintf(stderr, "GLEW error");
 		return 1;
 	}*/
+
+	#ifndef UNICODE  
+  typedef std::string String; 
+#else
+  typedef std::wstring String; 
+#endif
+
+	TCHAR pwd[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH,pwd);  
+
+strcat(pwd, "\\mainsound.wav");
+	printf("%s\n",pwd);
+	PlaySound(pwd, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
 	glutMainLoop();
 	return 0;
 }
