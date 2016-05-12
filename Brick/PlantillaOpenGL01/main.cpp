@@ -11,8 +11,8 @@ GLfloat tam = 4;
 GLfloat ballX = 0.0f;
 GLfloat ballY = 0.0f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin; 
-GLfloat xSpeed = 0.2f;
-GLfloat ySpeed = 0.1f;
+GLfloat xSpeed = 0.3f;
+GLfloat ySpeed = 0.2f;
 int refreshMillis = 30;
 
 //Projection clipping area
@@ -63,15 +63,16 @@ void ejesCoordenada(float w) {
 }
 
 void dibujarPelota(){
-	glBegin(GL_TRIANGLE_FAN);
-	glColor3f(0.0f,0.0f,1.0f);
-	glVertex2f(0.0f,0.0f);
-	int numSegments = 100;
-	GLfloat angle;
-	for (int i = 0; i <= numSegments; i++){
-		angle = i * 2.0f * PI / numSegments;
-		glVertex2f(cos(angle)*ballRadius, sin(angle)*ballRadius);
-	}
+
+
+
+	glBegin(GL_POLYGON);
+		for(int i =19; i <= 360; i++){
+			double angle = 2* PI * (i) / 360;
+			double x = cos(angle);
+			double y = sin(angle);
+			glVertex2d(x*ballRadius,y*ballRadius);
+		}
 	glEnd();
 }
 
@@ -94,13 +95,13 @@ void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos,
 int max_fila = 7;
 int max_columna = 5;
 
-float ladrilloXneg = -11.0;
-float ladrilloXpos = -9.0f;
+float ladrilloXneg = -9.5;
+float ladrilloXpos = -7.5;
 float ladrilloYpos = 9.0f;
 float ladrilloYneg = 8.5f;
 
 struct Ladrillo{
-	Ladrillo() : active(true){}
+	Ladrillo() : active(1){}
 	float xpos;
 	float xneg;
 	float ypos;
@@ -108,41 +109,55 @@ struct Ladrillo{
 	bool active;
 };
 
-Ladrillo ladrillos[5][7] = {};
-Ladrillo ladrillo = Ladrillo();
+Ladrillo ladrillos[5][7];
 
 void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
-	for (int j = 1; j <= max_columna; j++){
-		for (int i = 1; i <= max_fila; i++){
-			ladrillo.xpos = ladrilloXpos;
-			ladrillo.xneg = ladrilloXneg;
-			ladrillo.ypos = ladrilloYpos;
-			ladrillo.yneg = ladrilloYneg;
-			ladrillos[j][i] = ladrillo;
-			if (ladrillos[j][i].active==false){
-				exit(0);
+	for (int j = 0; j < max_columna; j++){
+		for (int i = 0; i < max_fila; i++){
+			ladrillos[j][i].xpos = ladrilloXpos;
+			ladrillos[j][i].xneg = ladrilloXneg;
+			ladrillos[j][i].ypos = ladrilloYpos;
+			ladrillos[j][i].yneg = ladrilloYneg;
+			if (ladrillos[j][i].active){
+				dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
 			}
-			dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+
 			ladrilloXneg += 2.8f;
 			ladrilloXpos += 2.8f;
 		}
-		ladrilloXneg = -11.0;
-		ladrilloXpos = -9.0f;
+		ladrilloXneg = -9.5;
+		ladrilloXpos = -7.50f;
 		ladrilloYpos -= 1.5f;
 		ladrilloYneg -= 1.5f;
 	}
 }
 
 void chocarLadrillos(){
-	for (int j = 1; j <= max_columna; j++){
-		for (int i = 1; i <= max_fila; i++){
-			if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg < ballY) ){
+	for (int j = 0; j < max_columna; j++){
+		for (int i = 0; i < max_fila; i++){
+			if (ladrillos[j][i].active){
+
+			if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-0.5 <= ballY && ladrillos[j][i].yneg >= ballY) ){
 				ySpeed = -ySpeed;
-			}
-			else if ((ladrillos[j][i].xneg >ballX && ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY) ){
-				xSpeed = -xSpeed;
-				ySpeed = -ySpeed;
+				printf("BOOM.");
 				ladrillos[j][i].active = false;
+			}
+			else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
+				ySpeed = -ySpeed;
+				printf("BOOM.");
+				ladrillos[j][i].active = false;
+			}
+			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
+				xSpeed = -xSpeed;
+				printf("BOOM.");
+				ladrillos[j][i].active = false;
+			}
+			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
+				xSpeed = -xSpeed;
+				printf("BOOM.");
+				ladrillos[j][i].active = false;
+			}
+
 			}
 		}
 	}
@@ -154,7 +169,41 @@ void render(){
 	glLoadIdentity();
 	
 	glPushMatrix();
-		dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
+		//dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
+	glPopMatrix();
+
+	glPushMatrix();
+		glPointSize(1.0f);
+		glColor3f(1.0f,0.0f,0.0f);
+		glLineWidth(3.0f);
+		float ancho = (ladrilloXpos+ladrilloXneg)/2;
+		float largo = (ladrilloYneg+ladrilloYpos)/2;
+		glBegin(GL_LINES);
+			glVertex2f(ladrilloXneg,ladrilloYneg);
+			glVertex2f(ladrilloXpos,ladrilloYneg);
+			glVertex2f(ladrilloXneg,ladrilloYpos);
+			glVertex2f(ladrilloXpos,ladrilloYpos);
+			glVertex2f(ladrilloXneg,ladrilloYneg);
+			glVertex2f(ladrilloXneg,ladrilloYpos);
+			glVertex2f(ladrilloXpos,ladrilloYneg);
+			glVertex2f(ladrilloXpos,ladrilloYpos);
+
+			glVertex2f(ancho-0.15,ladrilloYpos);
+			glVertex2f(ancho-0.40,largo);
+			glVertex2f(ancho-0.40,largo);
+			glVertex2f(ancho-0.15,ladrilloYneg);
+
+			glVertex2f(ancho+0.35,ladrilloYpos);
+			glVertex2f(ancho+0.10,largo);
+			glVertex2f(ancho+0.10,largo);
+			glVertex2f(ancho+0.35,ladrilloYneg);
+
+			glColor3f(0.0f,0.0f,0.0f);
+			glVertex2f(ancho-0.15,ladrilloYpos);
+			glVertex2f(ancho+0.27,ladrilloYpos);
+			glVertex2f(ancho-0.15,ladrilloYneg);
+			glVertex2f(ancho+0.27,ladrilloYneg);
+		glEnd();
 	glPopMatrix();
 
 	//Dibujar barra
@@ -196,8 +245,8 @@ void render(){
 	else if (ballY < ballYMin){
 		ballY = 0.0f;
 		ballX = 0.0f;
-		xSpeed = 0.2f;
-		ySpeed = 0.1f;
+		xSpeed = 0.3f;
+		ySpeed = 0.2f;
 	}
 	else if ((cBarra-tam/2 <= ballX && cBarra+tam/2 >= ballX) && (ballY < -8.5f) ){
 		ySpeed = -ySpeed;
@@ -264,7 +313,7 @@ void keyboard(unsigned char key, int x, int y)
 	default:
 	break;
 	}
-	glutPostRedisplay(); /* this redraws the scene without 
+	/*	glutPostRedisplay(); /* this redraws the scene without 
 	waiting for the display callback so that any changes appear 
 	instantly */
 }
