@@ -1,30 +1,38 @@
-﻿Build started 12/05/2016 4:31:13.
+﻿Build started 13/05/2016 10:47:05.
      1>Project "C:\Users\Nabil\Desktop\BricksOpenGL\Brick\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\dev\opengl\freeglut\include /I"C:\dev\opengl\glew-1.7.0\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(40): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(47): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(47): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(48): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(48): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(50): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(50): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(51): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(51): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(53): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(53): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(54): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(54): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(56): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(56): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(57): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(57): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(282): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(283): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(284): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(285): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(363): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(36): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(37): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(38): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(39): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(40): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(41): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(42): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(43): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(62): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(69): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(69): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(70): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(70): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(72): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(72): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(73): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(73): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(75): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(75): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(76): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(76): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(78): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(78): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(79): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(79): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(320): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(321): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(322): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(323): warning C4244: '=' : conversion from 'GLdouble' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(401): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Nabil\Desktop\BricksOpenGL\Brick\Debug\Brick.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /LIBPATH:C:\dev\opengl\freeglut\lib /LIBPATH:"C:\dev\opengl\glew-1.7.0\lib" glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Nabil\Desktop\BricksOpenGL\Brick\Debug\Brick.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Nabil\Desktop\BricksOpenGL\Brick\Debug\Brick.lib" /MACHINE:X86 Debug\main.obj
@@ -33,4 +41,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.69
+Time Elapsed 00:00:02.24

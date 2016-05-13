@@ -16,10 +16,32 @@ GLfloat ballY = 0.0f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin; 
 GLfloat xSpeed = 0.3f;
 GLfloat ySpeed = 0.2f;
+GLfloat ballCoords[8][2] = {0};
+
 int refreshMillis = 30;
 
 //Projection clipping area
 GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
+
+
+void setBcoords() {
+	ballCoords[0][0]=ballX+ballRadius;
+	ballCoords[0][1]=ballY;
+	ballCoords[1][0]=ballX;
+	ballCoords[1][1]=ballY+ballRadius;
+	ballCoords[2][0]=-ballX+ballRadius;
+	ballCoords[2][1]=-ballY;
+	ballCoords[3][0]=-ballX;
+	ballCoords[3][1]=-ballY+ballRadius;
+	ballCoords[4][0]=ballX+ballRadius*cos(45);
+	ballCoords[4][1]=ballY+ballRadius*sin(45);
+	ballCoords[5][0]=ballX+ballRadius*sin(135);
+	ballCoords[5][1]=ballY+ballRadius*sin(135);
+	ballCoords[6][0]=-ballX+ballRadius*cos(225);
+	ballCoords[6][1]=-ballY+ballRadius*sin(225);
+	ballCoords[7][0]=-ballX+ballRadius*cos(315);
+	ballCoords[7][1]=-ballY+ballRadius*sin(315);
+}
 
 void initGL(){
 	glClearColor(0.0,0.0,0.0,1.0);
@@ -164,11 +186,27 @@ void chocarLadrillos(){
 			}
 		}
 	}
+
+	GLfloat barY = -9.0;
+	GLfloat barraneg = cBarra-tam/2;
+	GLfloat barrapos = cBarra+tam/2;
+
+	// Cambiando los choques. Faltan los otros casos y los de los bloques.
+	if ( ((barraneg-0.5 < ballX && barraneg > ballX)||(barrapos+0.5 > ballX && barrapos < ballX))   && barY+0.5>ballY && ballY>barY ){
+		xSpeed = -xSpeed;
+		printf("BOOM.");
+	}
+	else if ( ((barraneg-0.5 < ballX && barraneg > ballX)||(barrapos+0.5 > ballX && barrapos < ballX))   && barY+0.5>ballY && ballY>barY ){
+		xSpeed = -xSpeed;
+		printf("BOOM.");
+	}
+
 }
 
 void render(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
+	setBcoords();
 	glLoadIdentity();
 	
 	glPushMatrix();
@@ -362,6 +400,7 @@ int main (int argc, char** argv) {
 
 strcat(pwd, "\\mainsound.wav");
 	printf("%s\n",pwd);
+	//Uncomment for surprises.
 	PlaySound(pwd, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
 	glutMainLoop();
 	return 0;
