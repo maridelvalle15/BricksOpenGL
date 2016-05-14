@@ -6,6 +6,12 @@
 #include <windows.h>
 #include <mmsystem.h>
 #include <stdio.h>
+
+#include <algorithm>
+#include <cassert>
+#include <functional>
+using namespace std;
+
 #define PI 3.1415926535897932384626433832795
 
 GLfloat ballRadius = 0.3f;
@@ -117,6 +123,56 @@ void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos,
 	glEnd();
 }
 
+void dibujarLadrilloEspecial(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
+	glPointSize(1.0f);
+	glColor3f(0.0f,1.0f,0.0f);
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+		glVertex2f(ladrilloXneg,ladrilloYneg);
+		glVertex2f(ladrilloXpos,ladrilloYneg);
+		glVertex2f(ladrilloXneg,ladrilloYpos);
+		glVertex2f(ladrilloXpos,ladrilloYpos);
+		glVertex2f(ladrilloXneg,ladrilloYneg);
+		glVertex2f(ladrilloXneg,ladrilloYpos);
+		glVertex2f(ladrilloXpos,ladrilloYneg);
+		glVertex2f(ladrilloXpos,ladrilloYpos);
+	glEnd();
+}
+
+void dibujarLadrilloRoto(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
+	glPointSize(1.0f);
+		glColor3f(0.0f,1.0f,0.0f);
+		glLineWidth(3.0f);
+		float ancho = (ladrilloXpos+ladrilloXneg)/2;
+		float largo = (ladrilloYneg+ladrilloYpos)/2;
+		glBegin(GL_LINES);
+			glVertex2f(ladrilloXneg,ladrilloYneg);
+			glVertex2f(ladrilloXpos,ladrilloYneg);
+			glVertex2f(ladrilloXneg,ladrilloYpos);
+			glVertex2f(ladrilloXpos,ladrilloYpos);
+			glVertex2f(ladrilloXneg,ladrilloYneg);
+			glVertex2f(ladrilloXneg,ladrilloYpos);
+			glVertex2f(ladrilloXpos,ladrilloYneg);
+			glVertex2f(ladrilloXpos,ladrilloYpos);
+
+			glVertex2f(ancho-0.15,ladrilloYpos);
+			glVertex2f(ancho-0.40,largo);
+			glVertex2f(ancho-0.40,largo);
+			glVertex2f(ancho-0.15,ladrilloYneg);
+
+			glVertex2f(ancho+0.35,ladrilloYpos);
+			glVertex2f(ancho+0.10,largo);
+			glVertex2f(ancho+0.10,largo);
+			glVertex2f(ancho+0.35,ladrilloYneg);
+
+			glColor3f(0.0f,0.0f,0.0f);
+			glVertex2f(ancho-0.15,ladrilloYpos);
+			glVertex2f(ancho+0.27,ladrilloYpos);
+			glVertex2f(ancho-0.15,ladrilloYneg);
+			glVertex2f(ancho+0.27,ladrilloYneg);
+		glEnd();
+}
+
 int max_fila = 7;
 int max_columna = 5;
 
@@ -126,15 +182,23 @@ float ladrilloYpos = 9.0f;
 float ladrilloYneg = 8.5f;
 
 struct Ladrillo{
-	Ladrillo() : active(1){}
+	Ladrillo() : active(1),breakable(0),counter(0){}
 	float xpos;
 	float xneg;
 	float ypos;
 	float yneg;
 	bool active;
+	bool breakable;
+	int counter;
 };
 
 Ladrillo ladrillos[5][7];
+
+int v1 = rand() % 3;
+int v2 = rand() % 4;
+int v3 = rand() % 5;
+int v4 = rand() % 3;
+int v5 = rand() % 6;// v2 in the range 1 to 100
 
 void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
 	for (int j = 0; j < max_columna; j++){
@@ -144,7 +208,19 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 			ladrillos[j][i].ypos = ladrilloYpos;
 			ladrillos[j][i].yneg = ladrilloYneg;
 			if (ladrillos[j][i].active){
+				if ((i == v1 && j==0) || (i == v2 && j==1) || (i == v3 && j==2) || (i == v4 && j==3) || (i == v5 && j==4)){
+					if (ladrillos[j][i].counter == 0){
+					ladrillos[j][i].breakable = 1;
+					dibujarLadrilloEspecial(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+					}
+					else{
+						printf("%d",ladrillos[j][i].counter);
+						dibujarLadrilloRoto(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+					}
+				}
+				else{
 				dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+				}
 			}
 
 			ladrilloXneg += 2.8f;
@@ -164,23 +240,31 @@ void chocarLadrillos(){
 
 			if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-0.5 <= ballY && ladrillos[j][i].yneg >= ballY) ){
 				ySpeed = -ySpeed;
-				printf("BOOM.");
-				ladrillos[j][i].active = false;
+				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+					ladrillos[j][i].active = false;
+				}
+				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 			}
 			else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
 				ySpeed = -ySpeed;
-				printf("BOOM.");
-				ladrillos[j][i].active = false;
+				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+					ladrillos[j][i].active = false;
+				}
+				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 			}
 			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
 				xSpeed = -xSpeed;
-				printf("BOOM.");
+				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
 				ladrillos[j][i].active = false;
+				}
+				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 			}
 			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
 				xSpeed = -xSpeed;
-				printf("BOOM.");
+				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
 				ladrillos[j][i].active = false;
+				}
+				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 			}
 
 			}
@@ -212,41 +296,7 @@ void render(){
 	glPushMatrix();
 	 dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
 	glPopMatrix();
-	/*
-	glPushMatrix();
-		glPointSize(1.0f);
-		glColor3f(1.0f,0.0f,0.0f);
-		glLineWidth(3.0f);
-		float ancho = (ladrilloXpos+ladrilloXneg)/2;
-		float largo = (ladrilloYneg+ladrilloYpos)/2;
-		glBegin(GL_LINES);
-			glVertex2f(ladrilloXneg,ladrilloYneg);
-			glVertex2f(ladrilloXpos,ladrilloYneg);
-			glVertex2f(ladrilloXneg,ladrilloYpos);
-			glVertex2f(ladrilloXpos,ladrilloYpos);
-			glVertex2f(ladrilloXneg,ladrilloYneg);
-			glVertex2f(ladrilloXneg,ladrilloYpos);
-			glVertex2f(ladrilloXpos,ladrilloYneg);
-			glVertex2f(ladrilloXpos,ladrilloYpos);
-
-			glVertex2f(ancho-0.15,ladrilloYpos);
-			glVertex2f(ancho-0.40,largo);
-			glVertex2f(ancho-0.40,largo);
-			glVertex2f(ancho-0.15,ladrilloYneg);
-
-			glVertex2f(ancho+0.35,ladrilloYpos);
-			glVertex2f(ancho+0.10,largo);
-			glVertex2f(ancho+0.10,largo);
-			glVertex2f(ancho+0.35,ladrilloYneg);
-
-			glColor3f(0.0f,0.0f,0.0f);
-			glVertex2f(ancho-0.15,ladrilloYpos);
-			glVertex2f(ancho+0.27,ladrilloYpos);
-			glVertex2f(ancho-0.15,ladrilloYneg);
-			glVertex2f(ancho+0.27,ladrilloYneg);
-		glEnd();
-	glPopMatrix();
-	*/
+	
 	//Dibujar barra
 	glPushMatrix();
 		//ejesCoordenada(1.0);
@@ -399,7 +449,7 @@ int main (int argc, char** argv) {
 	GetCurrentDirectory(MAX_PATH,pwd);  
 
 strcat(pwd, "\\mainsound.wav");
-	printf("%s\n",pwd);
+	//printf("%s\n",pwd);
 	//Uncomment for surprises.
 	PlaySound(pwd, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
 	glutMainLoop();
