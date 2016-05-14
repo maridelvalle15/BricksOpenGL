@@ -94,9 +94,6 @@ void ejesCoordenada(float w) {
 }
 
 void dibujarPelota(){
-
-
-
 	glBegin(GL_POLYGON);
 		for(int i =19; i <= 360; i++){
 			double angle = 2* PI * (i) / 360;
@@ -105,6 +102,24 @@ void dibujarPelota(){
 			glVertex2d(x*ballRadius,y*ballRadius);
 		}
 	glEnd();
+}
+
+void dibujarBonus(float cx, float cy){
+	glColor3f(0.0f,1.0f,1.0f);
+	glBegin(GL_LINE_LOOP);
+    for (int ii = 0; ii < 100; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(100);//get the current angle 
+        float x = (0.1) * cosf(theta);//calculate the x component 
+        float y = (0.1) * sinf(theta);//calculate the y component 
+        glVertex2f(x + cx, y + cy);//output vertex 
+    }
+    glEnd();
+}
+
+void soltarBonus(float xpos, float ypos){
+	//glTranslatef(xpos,ypos,0.0f);
+	dibujarBonus(xpos,ypos);
+	//glutSwapBuffers();
 }
 
 void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
@@ -182,23 +197,32 @@ float ladrilloYpos = 9.0f;
 float ladrilloYneg = 8.5f;
 
 struct Ladrillo{
-	Ladrillo() : active(1),breakable(0),counter(0){}
+	Ladrillo() : active(1),breakable(0),bonus(0),counter(0){}
 	float xpos;
 	float xneg;
 	float ypos;
 	float yneg;
 	bool active;
 	bool breakable;
+	bool bonus;
 	int counter;
 };
 
 Ladrillo ladrillos[5][7];
 
+// numeros random para escoger ladrillos especiales (dificiles de romper)
 int v1 = rand() % 3;
 int v2 = rand() % 4;
 int v3 = rand() % 5;
 int v4 = rand() % 3;
 int v5 = rand() % 6;// v2 in the range 1 to 100
+
+// numeros random para escoger ladrillos con bonus
+int bonus1 = rand() % 1;
+int bonus2 = rand() % 6;
+int bonus3 = rand() % 4;
+int bonus4 = rand() % 3;
+int bonus5 = rand() % 5;// v2 in the range 1 to 100
 
 void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
 	for (int j = 0; j < max_columna; j++){
@@ -208,20 +232,27 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 			ladrillos[j][i].ypos = ladrilloYpos;
 			ladrillos[j][i].yneg = ladrilloYneg;
 			if (ladrillos[j][i].active){
+				// ver si es una posicion especial
 				if ((i == v1 && j==0) || (i == v2 && j==1) || (i == v3 && j==2) || (i == v4 && j==3) || (i == v5 && j==4)){
+					// Si no ha sido chocado
 					if (ladrillos[j][i].counter == 0){
 					ladrillos[j][i].breakable = 1;
 					dibujarLadrilloEspecial(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
 					}
+					// si ya fue chocado
 					else{
-						printf("%d",ladrillos[j][i].counter);
 						dibujarLadrilloRoto(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
 					}
 				}
 				else{
 				dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
 				}
-			}
+				// ver si es una posicion bonus
+				if ((i == bonus1 && j==0) || (i == bonus2 && j==1) || (i == bonus3 && j==2) || (i == bonus4 && j==3) || (i == bonus5 && j==4)){
+					ladrillos[j][i].bonus = 1;
+				}
+			
+}
 
 			ladrilloXneg += 2.8f;
 			ladrilloXpos += 2.8f;
@@ -244,6 +275,11 @@ void chocarLadrillos(){
 					ladrillos[j][i].active = false;
 				}
 				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				// verificamos si la pelota choco contra ladrillo bonus
+				if (ladrillos[j][i].bonus == 1){
+					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
+					printf("%s","SOy bonus");
+				}
 			}
 			else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
 				ySpeed = -ySpeed;
@@ -251,6 +287,11 @@ void chocarLadrillos(){
 					ladrillos[j][i].active = false;
 				}
 				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				// verificamos si la pelota choco contra ladrillo bonus
+				if (ladrillos[j][i].bonus == 1){
+					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
+					printf("%s","SOy bonus");
+				}
 			}
 			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
 				xSpeed = -xSpeed;
@@ -258,6 +299,11 @@ void chocarLadrillos(){
 				ladrillos[j][i].active = false;
 				}
 				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				// verificamos si la pelota choco contra ladrillo bonus
+				if (ladrillos[j][i].bonus == 1){
+					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
+					printf("%s","SOy bonus");
+				}
 			}
 			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
 				xSpeed = -xSpeed;
@@ -265,6 +311,11 @@ void chocarLadrillos(){
 				ladrillos[j][i].active = false;
 				}
 				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				// verificamos si la pelota choco contra ladrillo bonus
+				if (ladrillos[j][i].bonus == 1){
+					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
+					printf("%s","SOy bonus");
+				}
 			}
 
 			}
