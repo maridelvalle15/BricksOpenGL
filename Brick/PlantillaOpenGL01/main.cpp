@@ -120,9 +120,9 @@ void dibujarPelota(){
 			glVertex2d(0,0);
 			float x = 0;
 			float y = 0;
-				x=xSpeed*100;
+				x=xSpeed*1000;
 
-				y=ySpeed*100;
+				y=ySpeed*1000;
 			glVertex2d(x,y);
 	glEnd();
 	glLineWidth(3.0f);
@@ -321,10 +321,10 @@ void setSpecials(){
 }
 void initBlocks(){
 
-float ladrilloXn = -9.5;
-float ladrilloXp = -7.5;
+float ladrilloXn = -10.5;
+float ladrilloXp = -8.5;
 float ladrilloYp = 9.0f;
-float ladrilloYn = 8.5f;
+float ladrilloYn = 8.3f;
 
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
@@ -338,8 +338,8 @@ float ladrilloYn = 8.5f;
 			ladrilloXp += 2.8f;
 		}
 
-		ladrilloXn = -9.5;
-		ladrilloXp = -7.50f;
+		ladrilloXn = -10.5;
+		ladrilloXp = -8.50f;
 		ladrilloYp -= 1.5f;
 		ladrilloYn -= 1.5f;
 	}
@@ -388,12 +388,10 @@ void dibujarLadrillos(){
 	for (int j=0; j<max_columna; j++){
 		for (int i=0; i<max_fila; i++){
 			if (ladrillos[j][i].bonusAct){
-				//cout<<"Bonus: "<<i<<" Activo."<<endl;
 				float mX = ladrillos[j][i].xneg+1;
 				float mY = ladrillos[j][i].yneg;
 				dibujarBonus(mX,mY,ladrillos[j][i].bonus);
 				ladrillos[j][i].yneg-=0.06f;
-				//cout<<"(X,Y)=("<<mX<<","<<mY<<")"<<endl;
 				if (ladrillos[j][i].yneg<=ballYMin){
 					ladrillos[j][i].bonusAct=0;
 				}
