@@ -23,9 +23,9 @@ GLfloat tam = 4;
 GLfloat ballX = 0.0f;
 GLfloat ballY = 0.0f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin; 
-GLfloat xSpeed = 0.3f;
-GLfloat ySpeed = 0.2f;
-GLfloat ballCoords[8][2] = {0};
+GLfloat xSpeed = 0.2f;
+GLfloat ySpeed = 0.1f;
+GLfloat ballCoords[4][2] = {0};
 TCHAR path[MAX_PATH];
 
 int refreshMillis = 30;
@@ -35,7 +35,7 @@ GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
 
 
 void setBcoords() {
-	ballCoords[0][0]=ballX+ballRadius;
+	/*ballCoords[0][0]=ballX+ballRadius;
 	ballCoords[0][1]=ballY;
 	ballCoords[1][0]=ballX+ballRadius*cos(45);
 	ballCoords[1][1]=ballY+ballRadius*sin(45);
@@ -50,7 +50,16 @@ void setBcoords() {
 	ballCoords[6][0]=-ballX;
 	ballCoords[6][1]=-ballY+ballRadius;
 	ballCoords[7][0]=-ballX+ballRadius*cos(315);
-	ballCoords[7][1]=-ballY+ballRadius*sin(315);
+	ballCoords[7][1]=-ballY+ballRadius*sin(315);*/
+
+	ballCoords[0][0]=ballX+ballRadius;
+	ballCoords[0][1]=ballY+ballRadius;
+	ballCoords[1][0]=ballX-ballRadius;
+	ballCoords[1][1]=ballY+ballRadius;
+	ballCoords[2][0]=-ballX-ballRadius;
+	ballCoords[2][1]=-ballY-ballRadius;
+	ballCoords[3][0]=-ballX+ballRadius;
+	ballCoords[3][1]=-ballY-ballRadius;
 }
 
 void initGL(){
@@ -106,6 +115,17 @@ void dibujarPelota(){
 			glVertex2d(x*ballRadius,y*ballRadius);
 		}
 	glEnd();
+	glLineWidth(0.5f);
+	glBegin(GL_LINE_STRIP);
+			glVertex2d(0,0);
+			float x = 0;
+			float y = 0;
+				x=xSpeed*100;
+
+				y=ySpeed*100;
+			glVertex2d(x,y);
+	glEnd();
+	glLineWidth(3.0f);
 }
 
 void dibujarBonus(float cx, float cy, int btype){
@@ -434,7 +454,7 @@ void checkBonus(){
 				TCHAR pathc[MAX_PATH];
 				strcpy(pathc,path);  
 				strcat(pathc, "\\catch.wav");
-				PlaySound(pathc, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
+				PlaySound(pathc, NULL, SND_ASYNC|SND_NOSTOP);
 
 				ladrillos[j][i].bonusAct=false;
 				switch (ladrillos[j][i].bonus)
@@ -465,10 +485,13 @@ void chocarLadrillos(){
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
 			if (ladrillos[j][i].active){
-
+				bool hasHit = false;
 
 				if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-0.5 <= ballY && ladrillos[j][i].yneg >= ballY) ){
 					ySpeed = -ySpeed;
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
 					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
 						ladrillos[j][i].active = false;
 					}
@@ -477,6 +500,9 @@ void chocarLadrillos(){
 				}
 				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
 					ySpeed = -ySpeed;
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
 					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
 						ladrillos[j][i].active = false;
 					}
@@ -486,21 +512,35 @@ void chocarLadrillos(){
 				}
 				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
 					xSpeed = -xSpeed;
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
 					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
 						ladrillos[j][i].active = false;
+
 					}
 					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 
 				}
 				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
 					xSpeed = -xSpeed;
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
 					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
 						ladrillos[j][i].active = false;
 					}
 					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 
 				}
-				int w;
+				// Si choca, suena
+
+				if (hasHit){
+					TCHAR h1[MAX_PATH];
+					strcpy(h1,path);  
+					strcat(h1, "\\hit1.wav");
+					PlaySound(h1, NULL, SND_ASYNC );
+				}
 				// verificamos si la pelota choco contra ladrillo bonus
 				if (!(ladrillos[j][i].bonusAct) && !(ladrillos[j][i].active) && ladrillos[j][i].bonus > 0  && (ladrillos[j][i].counter == 1 || (ladrillos[j][i].breakable == 1 && ladrillos[j][i].counter == 2))){
 					cout<<"Be free, bonus "<<ladrillos[j][i].bonus<<"\n";
@@ -510,21 +550,83 @@ void chocarLadrillos(){
 		}
 	}
 
+
+
+}
+void barHit(){
+	//Impacto contra la barra.
+
+	//ballCoords;
 	GLfloat barY = -9.0;
 	GLfloat barraneg = cBarra-tam/2;
 	GLfloat barrapos = cBarra+tam/2;
 
-	// Cambiando los choques. Faltan los otros casos y los de los bloques.
-	if ( ((barraneg-0.5 < ballX && barraneg > ballX)||(barrapos+0.5 > ballX && barrapos < ballX))   && barY+0.5>ballY && ballY>barY ){
-		xSpeed = -xSpeed;
-		//printf("BOOM.");
+	bool hasHit2=false;
+	//Esquinas
+	if (barrapos <= ballX-ballRadius && barrapos+2*ballRadius >= ballX && barY+2*ballRadius >= ballY && barY <= ballY-ballRadius){
+		hasHit2=true;
+		printf("ESQUINA 1");
+		if (xSpeed < 0 && ySpeed < 0){
+			xSpeed=-xSpeed;
+			ySpeed=-ySpeed;
+		}
+		else if (xSpeed < 0 && ySpeed > 0){
+			xSpeed=-xSpeed;
+		}
+		else if (xSpeed > 0 && ySpeed < 0){  
+			ySpeed=-ySpeed;
+		}
+		else {;} //> < no tiene sentido.
 	}
-	else if ( ((barraneg-0.5 < ballX && barraneg > ballX)||(barrapos+0.5 > ballX && barrapos < ballX))   && barY+0.5>ballY && ballY>barY ){
-		xSpeed = -xSpeed;
-		//printf("BOOM.");
+	else if (barraneg >= ballX+ballRadius && barraneg-2*ballRadius <= ballX && barY+2*ballRadius >= ballY && barY <= ballY-ballRadius){
+		hasHit2=true;
+		printf("ESQUINA 2");
+		if (xSpeed < 0 && ySpeed < 0){
+			ySpeed=-ySpeed;
+		}
+		else if (xSpeed > 0 && ySpeed > 0){
+			xSpeed=-xSpeed;
+		}
+		else if (xSpeed > 0 && ySpeed < 0){  
+			xSpeed=-xSpeed;
+			ySpeed=-ySpeed;
+		}
+		else {;} //< > no tiene sentido.
+	}else if ((barraneg <= ballX-ballRadius && barrapos >= ballX+ballRadius)  && barY<=ballY-ballRadius && ballY<barY+2*ballRadius && ySpeed<0 ){
+		printf("CASO1\n");
+			ySpeed = -ySpeed;
+			hasHit2=true;
 	}
+	else if ( barraneg >= ballX+ballRadius && barraneg-2*ballRadius <= ballX   && barY-2*ballRadius<=ballY && ballY<=barY+2*ballRadius && xSpeed>0 ){
+		printf("CASO2\n");
+		xSpeed = -xSpeed;
+		hasHit2=true;
+		//printf("BOOM.");
+	}else if ( barrapos < ballX-ballRadius && barrapos+2*ballRadius > ballX   && barY-2*ballRadius<=ballY && ballY<=barY+2*ballRadius && xSpeed<0 ){
+		printf("CASO3\n");
+		xSpeed = -xSpeed;
+		hasHit2=true;
+	}
+	else {
+		/*for (int i=0; i<4; i++){
+			int x1 = ballCoords[i][0];
+			int y1 = ballCoords[i][1];
+			int x2 = ballCoords[4-i][0];
+			int y2 = ballCoords[i+1][1];*/
+			
 
+
+		}
+
+
+	if (hasHit2){
+		TCHAR h2[MAX_PATH];
+		strcpy(h2,path);  
+		strcat(h2, "\\hit2.wav");
+		PlaySound(h2, NULL, SND_ASYNC );
+	}
 }
+
 
 void render(){
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -553,7 +655,7 @@ void render(){
 	dibujarPelota();
 	glutSwapBuffers();
 	checkBonus();
-
+	barHit();
 	chocarLadrillos();
 	dibujarLadrillos();
 
@@ -579,9 +681,7 @@ void render(){
 		xSpeed = 0.3f;
 		ySpeed = 0.2f;
 	}
-	else if ((cBarra-tam/2 <= ballX && cBarra+tam/2 >= ballX) && (ballY < -8.5f) ){
-		ySpeed = -ySpeed;
-	}
+
 
 }
 
@@ -688,7 +788,7 @@ int main (int argc, char** argv) {
 	TCHAR pathm[MAX_PATH];
 	strcpy(pathm,path);  
 	strcat(pathm, "\\mainsound.wav");
-	PlaySound(pathm, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC|SND_NOSTOP );
+	PlaySound(pathm, NULL, SND_LOOP|SND_ASYNC| SND_NOSTOP );
 	glutMainLoop();
 	return 0;
 }
