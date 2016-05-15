@@ -7,9 +7,12 @@
 #include <mmsystem.h>
 #include <stdio.h>
 
-#include <algorithm>
 #include <cassert>
 #include <functional>
+#include <time.h>
+#include <algorithm>
+#include <cstdlib>
+#include <iostream>
 using namespace std;
 
 #define PI 3.1415926535897932384626433832795
@@ -20,8 +23,8 @@ GLfloat tam = 4;
 GLfloat ballX = 0.0f;
 GLfloat ballY = 0.0f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin; 
-GLfloat xSpeed = 0.3f;
-GLfloat ySpeed = 0.2f;
+GLfloat xSpeed = 0.1f;
+GLfloat ySpeed = 0.05f;
 GLfloat ballCoords[8][2] = {0};
 
 int refreshMillis = 30;
@@ -33,18 +36,18 @@ GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
 void setBcoords() {
 	ballCoords[0][0]=ballX+ballRadius;
 	ballCoords[0][1]=ballY;
-	ballCoords[1][0]=ballX;
-	ballCoords[1][1]=ballY+ballRadius;
-	ballCoords[2][0]=-ballX+ballRadius;
-	ballCoords[2][1]=-ballY;
-	ballCoords[3][0]=-ballX;
-	ballCoords[3][1]=-ballY+ballRadius;
-	ballCoords[4][0]=ballX+ballRadius*cos(45);
-	ballCoords[4][1]=ballY+ballRadius*sin(45);
-	ballCoords[5][0]=ballX+ballRadius*sin(135);
-	ballCoords[5][1]=ballY+ballRadius*sin(135);
-	ballCoords[6][0]=-ballX+ballRadius*cos(225);
-	ballCoords[6][1]=-ballY+ballRadius*sin(225);
+	ballCoords[1][0]=ballX+ballRadius*cos(45);
+	ballCoords[1][1]=ballY+ballRadius*sin(45);
+	ballCoords[2][0]=ballX;
+	ballCoords[2][1]=ballY+ballRadius;
+	ballCoords[3][0]=ballX+ballRadius*sin(135);
+	ballCoords[3][1]=ballY+ballRadius*sin(135);
+	ballCoords[4][0]=-ballX+ballRadius;
+	ballCoords[4][1]=-ballY;
+	ballCoords[5][0]=-ballX+ballRadius*cos(225);
+	ballCoords[5][1]=-ballY+ballRadius*sin(225);
+	ballCoords[6][0]=-ballX;
+	ballCoords[6][1]=-ballY+ballRadius;
 	ballCoords[7][0]=-ballX+ballRadius*cos(315);
 	ballCoords[7][1]=-ballY+ballRadius*sin(315);
 }
@@ -122,25 +125,12 @@ void soltarBonus(float xpos, float ypos){
 	//glutSwapBuffers();
 }
 
-void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
+void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg, bool isSpecial){
 	glPointSize(1.0f);
-	glColor3f(1.0f,0.0f,0.0f);
-	glLineWidth(3.0f);
-	glBegin(GL_LINES);
-		glVertex2f(ladrilloXneg,ladrilloYneg);
-		glVertex2f(ladrilloXpos,ladrilloYneg);
-		glVertex2f(ladrilloXneg,ladrilloYpos);
-		glVertex2f(ladrilloXpos,ladrilloYpos);
-		glVertex2f(ladrilloXneg,ladrilloYneg);
-		glVertex2f(ladrilloXneg,ladrilloYpos);
-		glVertex2f(ladrilloXpos,ladrilloYneg);
-		glVertex2f(ladrilloXpos,ladrilloYpos);
-	glEnd();
-}
-
-void dibujarLadrilloEspecial(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
-	glPointSize(1.0f);
-	glColor3f(0.0f,1.0f,0.0f);
+	if (isSpecial)
+		glColor3f(0.0f,1.0f,0.0f);
+	else
+		glColor3f(1.0f,0.0f,0.0f);
 	glLineWidth(3.0f);
 	glBegin(GL_LINES);
 		glVertex2f(ladrilloXneg,ladrilloYneg);
@@ -204,27 +194,78 @@ struct Ladrillo{
 	float yneg;
 	bool active;
 	bool breakable;
-	bool bonus;
+	int bonus;
 	int counter;
 };
 
 Ladrillo ladrillos[5][7];
 
 // numeros random para escoger ladrillos especiales (dificiles de romper)
-int v1 = rand() % 3;
+/*int v1 = rand() % 3;
 int v2 = rand() % 4;
 int v3 = rand() % 5;
 int v4 = rand() % 3;
-int v5 = rand() % 6;// v2 in the range 1 to 100
+int v5 = rand() % 6;// v2 in the range 1 to 100*/
 
+
+int specials[5];
+int bonuses[6];
 // numeros random para escoger ladrillos con bonus
-int bonus1 = rand() % 1;
+/*int bonus1 = rand() % 1;
 int bonus2 = rand() % 6;
 int bonus3 = rand() % 4;
 int bonus4 = rand() % 3;
-int bonus5 = rand() % 5;// v2 in the range 1 to 100
+int bonus5 = rand() % 5;// v2 in the range 1 to 100*/
+
+void setSpecials(){
+
+	//Generando a los bloques especiales
+    int aux[35] = {0};
+	for (int i =0; i<35; i++)
+		aux[i]=i;
+	time_t t;
+	std::srand((unsigned) time(&t));
+
+    std::random_shuffle(aux, aux + 35);
+	int col, row;
+    for (int i=0; i<5; i++)
+		specials[i]=aux[i];
+
+
+}
+
+void setBonus(){
+	//Generando a los bloques bonus y sus valores.
+	int maxBonuses=2;//Cambiar 2 por la cantidad tipos de bonus a tener.
+    int aux[35] = {0};
+	int aux2[2] = {0}; 
+	for (int i =0; i<35; i++)
+		aux[i]=i;
+
+	time_t t;
+	std::srand((unsigned) time(&t));
+
+    std::random_shuffle(aux, aux + 35);
+	int col, row;
+    for (int i=0; i<6; i++){
+		//bonuses[i]=aux[i];
+		col = aux[i] / 7;
+		row = aux[i] - col * 7;
+		int myBonus = rand()%(maxBonuses-1 + 1) + 1;
+		time_t t2;
+		std::srand((unsigned) time(&t2));
+
+
+		ladrillos[row][col].bonus=myBonus;
+		cout<<aux[i]<<"::"<<col<<"--"<<row<<" bonus:"<<myBonus<<endl;
+		cin>>col;
+		
+	}
+}
 
 void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
+
+
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
 			ladrillos[j][i].xpos = ladrilloXpos;
@@ -233,11 +274,18 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 			ladrillos[j][i].yneg = ladrilloYneg;
 			if (ladrillos[j][i].active){
 				// ver si es una posicion especial
-				if ((i == v1 && j==0) || (i == v2 && j==1) || (i == v3 && j==2) || (i == v4 && j==3) || (i == v5 && j==4)){
+				bool isSpecial = false;
+				for (int k=0; k<5; k++)
+					if (j * 7 + i == specials[k]){
+						isSpecial=true;
+						break;
+					} 
+
+				if (isSpecial){
 					// Si no ha sido chocado
 					if (ladrillos[j][i].counter == 0){
 					ladrillos[j][i].breakable = 1;
-					dibujarLadrilloEspecial(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+					dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg,isSpecial);
 					}
 					// si ya fue chocado
 					else{
@@ -245,12 +293,12 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 					}
 				}
 				else{
-				dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+				dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg,isSpecial);
 				}
 				// ver si es una posicion bonus
-				if ((i == bonus1 && j==0) || (i == bonus2 && j==1) || (i == bonus3 && j==2) || (i == bonus4 && j==3) || (i == bonus5 && j==4)){
+				/*if ((i == bonus1 && j==0) || (i == bonus2 && j==1) || (i == bonus3 && j==2) || (i == bonus4 && j==3) || (i == bonus5 && j==4)){
 					ladrillos[j][i].bonus = 1;
-				}
+				}*/
 			
 }
 
@@ -473,6 +521,8 @@ int windowPosX = 50;
 int windowPosY = 50;
 
 int main (int argc, char** argv) {
+	setSpecials();
+	setBonus();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);
 	glutInitWindowSize(windowWidth,windowHeight);
@@ -490,11 +540,7 @@ int main (int argc, char** argv) {
 		return 1;
 	}*/
 
-	#ifndef UNICODE  
-  typedef std::string String; 
-#else
-  typedef std::wstring String; 
-#endif
+
 
 	TCHAR pwd[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH,pwd);  
