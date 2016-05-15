@@ -25,9 +25,9 @@ GLfloat ballY = 0.0f;
 GLfloat ballYMin = -10.5; 
 GLfloat ballXMin=-10.5;
 GLfloat ballXMax=10.5;
-GLfloat ballYMax=10.5;
-GLfloat xSpeed = 0.2f;
-GLfloat ySpeed = 0.1f;
+GLfloat ballYMax=7.5;
+GLfloat xSpeed = 0.3f;
+GLfloat ySpeed = 0.2f;
 GLfloat ballCoords[4][2] = {0};
 TCHAR path[MAX_PATH];
 
@@ -284,29 +284,44 @@ struct Ladrillo{
 	bool bonusAct;
 };
 
+float rbg(float i){
+	return i/255;
+}
 
 void dibujarParedes(){
 glColor3f(1.0f,0.0,1.0f);
+
 	glTranslated(0,1,0);
-	glBegin(GL_LINES);
-		//pared izquierda externa
-		glVertex2f(-12,8.5);
-		glVertex2f(-12,-10);
-		//pared izquierda interna
-		glVertex2f(-11,7.5);
+	glBegin(GL_LINE_LOOP);
+		//pared izquierda inferior
 		glVertex2f(-11,-10);
-		//pared derecha externa
-		glVertex2f(12,8.5);
-		glVertex2f(12,-10);
-		//pared derecha interna
-		glVertex2f(11,7.5);
-		glVertex2f(11,-10);
-		//pared arriba externa
-		glVertex2f(12,8.5);
+		//glVertex2f(-12,-10);
+		//pared izquierda externa
+		glVertex2f(-12,-10);
 		glVertex2f(-12,8.5);
-		//pared arriba interna
+		//pared arriba externa
+		//glVertex2f(-12,8.5);
+glColor3f(rbg(75),rbg(0),rbg(130));
+
+		glVertex2f(12,8.5);
+		//pared derecha externa
+		//glVertex2f(12,8.5);
+		glVertex2f(12,-10);
+		//pared derecha inferior
+		//glVertex2f(12,-10);
+		glVertex2f(11,-10);
+		//pared derecha interna
+		//glVertex2f(11,-10);
 		glVertex2f(11,7.5);
+		//pared arriba interna
+		//glVertex2f(11,7.5);
+glColor3f(rbg(186),rbg(85),rbg(211));
 		glVertex2f(-11,7.5);
+		//pared izquierda interna
+		//glVertex2f(-11,7.5);
+		glVertex2f(-11,-10);
+
+
 	glEnd();
 }
 
@@ -511,8 +526,53 @@ void chocarLadrillos(){
 			if (ladrillos[j][i].active){
 				bool hasHit = false;
 
-				if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-0.5 <= ballY && ladrillos[j][i].yneg >= ballY) ){
-					ySpeed = -ySpeed;
+				if (ladrillos[j][i].xpos <= ballX-ballRadius &&
+					ladrillos[j][i].xpos+2*ballRadius >= ballX &&
+					ladrillos[j][i].ypos+2*ballRadius >= ballY &&
+					ladrillos[j][i].ypos <= ballY-ballRadius){
+
+					hasHit=true;
+					printf("ESQUINA 1");
+
+					if (xSpeed < 0 && ySpeed < 0){
+						xSpeed=-xSpeed;
+						ySpeed=-ySpeed;
+					}
+					else if (xSpeed < 0 && ySpeed > 0){
+						xSpeed=-xSpeed;
+					}
+					else if (xSpeed > 0 && ySpeed < 0){  
+						ySpeed=-ySpeed;
+					}
+					else {;} //> < no tiene sentido.
+
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				}
+
+				else if (ladrillos[j][i].xneg >= ballX+ballRadius &&
+						 ladrillos[j][i].xneg-2*ballRadius <= ballX &&
+						 ladrillos[j][i].ypos+2*ballRadius >= ballY &&
+						 ladrillos[j][i].ypos <= ballY-ballRadius){
+					hasHit=true;
+					printf("ESQUINA 2");
+					if (xSpeed < 0 && ySpeed < 0){
+						ySpeed=-ySpeed;
+					}
+					else if (xSpeed > 0 && ySpeed > 0){
+						xSpeed=-xSpeed;
+					}
+					else if (xSpeed > 0 && ySpeed < 0){  
+						xSpeed=-xSpeed;
+						ySpeed=-ySpeed;
+					}
+					else {		printf("AAAAAAAAAAAAAAAA"); }
+
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
 					}
@@ -522,7 +582,74 @@ void chocarLadrillos(){
 					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 
 				}
-				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
+				else if (ladrillos[j][i].xpos <= ballX-2*ballRadius &&
+					ladrillos[j][i].xpos+2*ballRadius >= ballX &&
+					ladrillos[j][i].yneg-2*ballRadius <= ballY &&
+					ladrillos[j][i].yneg >= ballY+ballRadius){
+
+					hasHit=true;
+					printf("ESQUINA 4");
+
+					if (xSpeed < 0 && ySpeed < 0){
+						xSpeed=-xSpeed;
+					}
+					else if (xSpeed < 0 && ySpeed > 0){
+						ySpeed=-ySpeed;
+						xSpeed=-xSpeed;
+					}
+					else if (xSpeed > 0 && ySpeed > 0){  
+						ySpeed=-ySpeed;
+					}
+					else {;} //> < no tiene sentido.
+
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				}
+
+				else if (ladrillos[j][i].xneg >= ballX+ballRadius &&
+						 ladrillos[j][i].xneg-2*ballRadius <= ballX &&
+						 ladrillos[j][i].yneg-2*ballRadius <= ballY &&
+						 ladrillos[j][i].yneg >= ballY+ballRadius){
+					hasHit=true;
+					printf("ESQUINA 3");
+					if (xSpeed < 0 && ySpeed > 0){
+						ySpeed=-ySpeed;
+					}
+					else if (xSpeed > 0 && ySpeed > 0){
+						ySpeed=-ySpeed;
+						xSpeed=-xSpeed;
+					}
+					else if (xSpeed > 0 && ySpeed < 0){  
+						xSpeed=-xSpeed;
+					}
+					else {		printf("AAAAAAAAAAAAAAAA"); } // < < no tiene sentido
+
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				//FIN ESQUINAS
+				}
+
+				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-ballRadius <= ballY && ladrillos[j][i].yneg >= ballY) ){
+					ySpeed = -ySpeed;
+					if (ladrillos[j][i].counter <= 1){
+						hasHit=true;
+					}
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+				}
+				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+ballRadius >= ballY) ){
 					ySpeed = -ySpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -534,7 +661,7 @@ void chocarLadrillos(){
 
 
 				}
-				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
+				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+ballRadius >= ballX) ){
 					xSpeed = -xSpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -546,7 +673,7 @@ void chocarLadrillos(){
 					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 
 				}
-				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
+				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-ballRadius <= ballX && ladrillos[j][i].xneg >= ballX) ){
 					xSpeed = -xSpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -600,7 +727,8 @@ void barHit(){
 		else if (xSpeed > 0 && ySpeed < 0){  
 			ySpeed=-ySpeed;
 		}
-		else {;} //> < no tiene sentido.
+		else {		printf("AAAAAAAAAAAAAAAA");
+} //> < no tiene sentido.
 	}
 	else if (barraneg >= ballX+ballRadius && barraneg-2*ballRadius <= ballX && barY+2*ballRadius >= ballY && barY <= ballY-ballRadius){
 		hasHit2=true;
@@ -615,8 +743,9 @@ void barHit(){
 			xSpeed=-xSpeed;
 			ySpeed=-ySpeed;
 		}
-		else {;} //< > no tiene sentido.
-	}else if ((barraneg <= ballX-ballRadius && barrapos >= ballX+ballRadius)  && barY<=ballY-ballRadius && ballY<barY+2*ballRadius && ySpeed<0 ){
+		else {		printf("AAAAAAAAAAAAAAAA");
+} //< > no tiene sentido.
+	}else if (barraneg <= ballX && barrapos >= ballX  && barY<=ballY-ballRadius && ballY<barY+2*ballRadius && ySpeed<0 ){
 		printf("CASO1\n");
 			ySpeed = -ySpeed;
 			hasHit2=true;
@@ -638,7 +767,6 @@ void barHit(){
 			int x2 = ballCoords[4-i][0];
 			int y2 = ballCoords[i+1][1];*/
 			
-
 
 		}
 
@@ -739,7 +867,7 @@ void reshape(GLsizei width, GLsizei height){
 	gluOrtho2D(clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop);
 	ballXMin=-10.5;
 	ballXMax=10.5;
-	ballYMax=10.5;
+	ballYMax=7.5;
 	ballYMin = -10.5;
 }
 
