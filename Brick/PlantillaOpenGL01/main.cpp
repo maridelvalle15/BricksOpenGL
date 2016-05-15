@@ -23,9 +23,10 @@ GLfloat tam = 4;
 GLfloat ballX = 0.0f;
 GLfloat ballY = 0.0f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin; 
-GLfloat xSpeed = 0.1f;
-GLfloat ySpeed = 0.05f;
+GLfloat xSpeed = 0.3f;
+GLfloat ySpeed = 0.2f;
 GLfloat ballCoords[8][2] = {0};
+TCHAR path[MAX_PATH];
 
 int refreshMillis = 30;
 
@@ -107,30 +108,91 @@ void dibujarPelota(){
 	glEnd();
 }
 
-void dibujarBonus(float cx, float cy){
-	glColor3f(0.0f,1.0f,1.0f);
+void dibujarBonus(float cx, float cy, int btype){
+	switch (btype)
+	{   //Dibujos diferentes para cada bonus.
+	case(1) : 
+			  glColor3f(0.0f,191/255,1.0f);
+			  glBegin(GL_POLYGON);
+				glVertex2d(cx+0.3,cy+0.15);
+				glVertex2d(cx+0.3,cy-0.15);
+				glVertex2d(cx-0.3,cy-0.15);
+				glVertex2d(cx-0.3,cy+0.15);
+			  glEnd();
+			  glColor3f(1.0f,0,0.0f);
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx+0.5,cy+0.2);
+				glVertex2d(cx+0.5,cy-0.2);
+				glVertex2d(cx+0.3,cy);
+			  glEnd();
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx-0.5,cy+0.2);
+				glVertex2d(cx-0.5,cy-0.2);
+				glVertex2d(cx-0.3,cy);
+			  glEnd();
+			  glColor3f(0.698f,0.1333f,0.1333f);
+			  break;
+	case(2) : glColor3f(1.0f,1,0.0f);
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx+0.3,cy+0.2);
+				glVertex2d(cx+0.3,cy-0.2);
+				glVertex2d(cx+0.5,cy);
+			  glEnd();
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx+0,cy+0.2);
+				glVertex2d(cx+0,cy-0.2);
+				glVertex2d(cx+0.2,cy);
+			  glEnd();
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx-0.3,cy+0.2);
+				glVertex2d(cx-0.3,cy-0.2);
+				glVertex2d(cx,cy);
+			  glEnd();
+			  glColor3f(1.0f,1.0f,0.0f);
+			  break;
+	case(3) : 
+			  glColor3f(0.0f,191/255,1.0f);
+			  glBegin(GL_POLYGON);
+				glVertex2d(cx+0.3,cy+0.15);
+				glVertex2d(cx+0.3,cy-0.15);
+				glVertex2d(cx-0.3,cy-0.15);
+				glVertex2d(cx-0.3,cy+0.15);
+			  glEnd();
+			  glColor3f(1.0f,1,0.0f);
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx+0.3,cy+0.2);
+				glVertex2d(cx+0.3,cy-0.2);
+				glVertex2d(cx+0.5,cy);
+			  glEnd();
+			  glBegin(GL_TRIANGLES);
+				glVertex2d(cx-0.3,cy+0.2);
+				glVertex2d(cx-0.3,cy-0.2);
+				glVertex2d(cx-0.5,cy);
+			  glEnd();
+			  glColor3f(0,0.501f,0);
+			  break;
+	default: break;
+	}
 	glBegin(GL_LINE_LOOP);
-    for (int ii = 0; ii < 100; ii++)   {
-        float theta = 2.0f * 3.1415926f * float(ii) / float(100);//get the current angle 
-        float x = (0.1) * cosf(theta);//calculate the x component 
-        float y = (0.1) * sinf(theta);//calculate the y component 
-        glVertex2f(x + cx, y + cy);//output vertex 
-    }
-    glEnd();
+		for(int i =19; i <= 360; i++){
+			double angle = 2* PI * (i) / 360;
+			double x = cos(angle);
+			double y = sin(angle);
+			glVertex2d(cx+x*(ballRadius*2),cy+y*(ballRadius*2));
+		}
+	glEnd();
+
 }
 
-void soltarBonus(float xpos, float ypos){
-	//glTranslatef(xpos,ypos,0.0f);
-	dibujarBonus(xpos,ypos);
-	//glutSwapBuffers();
-}
 
-void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg, bool isSpecial){
+void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg, int isSpecial){
 	glPointSize(1.0f);
-	if (isSpecial)
+	if (isSpecial==1)
 		glColor3f(0.0f,1.0f,0.0f);
-	else
+	else if (isSpecial==0)
 		glColor3f(1.0f,0.0f,0.0f);
+	else
+		glColor3f(1.0f,1.0f,0.0f);
 	glLineWidth(3.0f);
 	glBegin(GL_LINES);
 		glVertex2f(ladrilloXneg,ladrilloYneg);
@@ -187,7 +249,7 @@ float ladrilloYpos = 9.0f;
 float ladrilloYneg = 8.5f;
 
 struct Ladrillo{
-	Ladrillo() : active(1),breakable(0),bonus(0),counter(0){}
+	Ladrillo() : active(1),breakable(0),bonus(0),counter(0),bonusAct(0){}
 	float xpos;
 	float xneg;
 	float ypos;
@@ -196,9 +258,14 @@ struct Ladrillo{
 	bool breakable;
 	int bonus;
 	int counter;
+	bool bonusAct;
 };
 
+
+
+
 Ladrillo ladrillos[5][7];
+
 
 // numeros random para escoger ladrillos especiales (dificiles de romper)
 /*int v1 = rand() % 3;
@@ -209,7 +276,7 @@ int v5 = rand() % 6;// v2 in the range 1 to 100*/
 
 
 int specials[5];
-int bonuses[6];
+
 // numeros random para escoger ladrillos con bonus
 /*int bonus1 = rand() % 1;
 int bonus2 = rand() % 6;
@@ -227,54 +294,99 @@ void setSpecials(){
 	std::srand((unsigned) time(&t));
 
     std::random_shuffle(aux, aux + 35);
-	int col, row;
     for (int i=0; i<5; i++)
 		specials[i]=aux[i];
 
 
 }
+void initBlocks(){
+
+float ladrilloXn = -9.5;
+float ladrilloXp = -7.5;
+float ladrilloYp = 9.0f;
+float ladrilloYn = 8.5f;
+
+	for (int j = 0; j < max_columna; j++){
+		for (int i = 0; i < max_fila; i++){
+			ladrillos[j][i].xpos = ladrilloXp;
+			ladrillos[j][i].xneg = ladrilloXn;
+			ladrillos[j][i].ypos = ladrilloYp;
+			ladrillos[j][i].yneg = ladrilloYn;
+			ladrillos[j][i].active = 1;
+
+			ladrilloXn += 2.8f;
+			ladrilloXp += 2.8f;
+		}
+
+		ladrilloXn = -9.5;
+		ladrilloXp = -7.50f;
+		ladrilloYp -= 1.5f;
+		ladrilloYn -= 1.5f;
+	}
+}
 
 void setBonus(){
 	//Generando a los bloques bonus y sus valores.
-	int maxBonuses=2;//Cambiar 2 por la cantidad tipos de bonus a tener.
+	int maxBonuses=3;//Cambiar 2 por la cantidad tipos de bonus a tener.
     int aux[35] = {0};
 	int aux2[2] = {0}; 
 	for (int i =0; i<35; i++)
 		aux[i]=i;
-
-	time_t t;
-	std::srand((unsigned) time(&t));
+	/*
+{
+    int color;
+    srand ( time(NULL) );
+    color = rand() % 4 + 1; 
+    cout << color;
+    return 0;
+   }*/
 
     std::random_shuffle(aux, aux + 35);
 	int col, row;
+	int bonC=1;
     for (int i=0; i<6; i++){
-		//bonuses[i]=aux[i];
-		col = aux[i] / 7;
-		row = aux[i] - col * 7;
-		int myBonus = rand()%(maxBonuses-1 + 1) + 1;
-		time_t t2;
-		std::srand((unsigned) time(&t2));
-
+		col = aux[i] / 5;
+		row = aux[i] - col * 5;
+		//time_t t;
+		//std::srand((unsigned) time(&t));
+		int myBonus = bonC++;
+		if (bonC>maxBonuses){
+			bonC=1;
+		}
 
 		ladrillos[row][col].bonus=myBonus;
-		cout<<aux[i]<<"::"<<col<<"--"<<row<<" bonus:"<<myBonus<<endl;
-		cin>>col;
+
+		cout<<i<<"::"<<ladrillos[row][col].bonus<<"--"<<row<<","<<col<<endl;
+		//cin>>col;
 		
 	}
 }
 
-void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg, float ladrilloYneg){
+void dibujarLadrillos(){
 
+	//Dibujar Bonus
+	for (int j=0; j<max_columna; j++){
+		for (int i=0; i<max_fila; i++){
+			if (ladrillos[j][i].bonusAct){
+				//cout<<"Bonus: "<<i<<" Activo."<<endl;
+				float mX = ladrillos[j][i].xneg+1;
+				float mY = ladrillos[j][i].yneg;
+				dibujarBonus(mX,mY,ladrillos[j][i].bonus);
+				ladrillos[j][i].yneg-=0.06f;
+				//cout<<"(X,Y)=("<<mX<<","<<mY<<")"<<endl;
+				if (ladrillos[j][i].yneg<=ballYMin){
+					ladrillos[j][i].bonusAct=0;
+				}
+			}
+		}
+	}
 
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
-			ladrillos[j][i].xpos = ladrilloXpos;
-			ladrillos[j][i].xneg = ladrilloXneg;
-			ladrillos[j][i].ypos = ladrilloYpos;
-			ladrillos[j][i].yneg = ladrilloYneg;
 			if (ladrillos[j][i].active){
 				// ver si es una posicion especial
 				bool isSpecial = false;
+
 				for (int k=0; k<5; k++)
 					if (j * 7 + i == specials[k]){
 						isSpecial=true;
@@ -285,31 +397,68 @@ void dibujarLadrillos(float ladrilloXpos, float ladrilloYpos, float ladrilloXneg
 					// Si no ha sido chocado
 					if (ladrillos[j][i].counter == 0){
 					ladrillos[j][i].breakable = 1;
-					dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg,isSpecial);
+					dibujarLadrillo(ladrillos[j][i].xneg,ladrillos[j][i].xpos,ladrillos[j][i].ypos,ladrillos[j][i].yneg,isSpecial);
 					}
 					// si ya fue chocado
 					else{
-						dibujarLadrilloRoto(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg);
+						dibujarLadrilloRoto(ladrillos[j][i].xneg,ladrillos[j][i].xpos,ladrillos[j][i].ypos,ladrillos[j][i].yneg);
 					}
 				}
-				else{
-				dibujarLadrillo(ladrilloXneg,ladrilloXpos,ladrilloYpos,ladrilloYneg,isSpecial);
-				}
-				// ver si es una posicion bonus
-				/*if ((i == bonus1 && j==0) || (i == bonus2 && j==1) || (i == bonus3 && j==2) || (i == bonus4 && j==3) || (i == bonus5 && j==4)){
-					ladrillos[j][i].bonus = 1;
-				}*/
+				else
+					dibujarLadrillo(ladrillos[j][i].xneg,ladrillos[j][i].xpos,ladrillos[j][i].ypos,ladrillos[j][i].yneg,isSpecial);
 			
+			}
+
+
+		}
+
+	}
 }
 
-			ladrilloXneg += 2.8f;
-			ladrilloXpos += 2.8f;
+void checkBonus(){
+
+
+
+
+	//Atraparlos
+	GLfloat barY = -9.0;
+	GLfloat barraneg = cBarra-tam/2;
+	GLfloat barrapos = cBarra+tam/2;
+
+	for (int j=0; j<max_columna; j++){
+		for (int i=0; i<max_fila; i++){
+			GLfloat bX =ladrillos[j][i].xneg+1;
+			GLfloat bY =ladrillos[j][i].yneg;
+			if (ladrillos[j][i].bonusAct && barraneg-0.5-ballRadius <= bX && barrapos+0.5+ballRadius >= bX  && barY+0.5+ballRadius>=bY && barY-0.5-ballRadius<=bY){
+				printf("Gotcha.\n");
+				TCHAR pathc[MAX_PATH];
+				strcpy(pathc,path);  
+				strcat(pathc, "\\catch.wav");
+				PlaySound(pathc, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
+
+				ladrillos[j][i].bonusAct=false;
+				switch (ladrillos[j][i].bonus)
+				{
+				case(1):
+					tam-= tam * 15 / 100;
+					cout<<"Menos tamaño"<<endl;
+					break;
+				case(2):
+					xSpeed+= xSpeed * 40 / 100;
+					ySpeed+= ySpeed * 40 / 100;
+					cout<<"Más velocidad"<<endl;
+					break;
+				case(3):
+					tam+= tam * 15 / 100;
+					cout<<"Más Tamaño"<<endl;
+					break;
+				default:
+					break;
+				}
+			}
 		}
-		ladrilloXneg = -9.5;
-		ladrilloXpos = -7.50f;
-		ladrilloYpos -= 1.5f;
-		ladrilloYneg -= 1.5f;
 	}
+
 }
 
 void chocarLadrillos(){
@@ -317,55 +466,46 @@ void chocarLadrillos(){
 		for (int i = 0; i < max_fila; i++){
 			if (ladrillos[j][i].active){
 
-			if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-0.5 <= ballY && ladrillos[j][i].yneg >= ballY) ){
-				ySpeed = -ySpeed;
-				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
-					ladrillos[j][i].active = false;
-				}
-				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
-				// verificamos si la pelota choco contra ladrillo bonus
-				if (ladrillos[j][i].bonus == 1){
-					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
-					printf("%s","SOy bonus");
-				}
-			}
-			else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
-				ySpeed = -ySpeed;
-				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
-					ladrillos[j][i].active = false;
-				}
-				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
-				// verificamos si la pelota choco contra ladrillo bonus
-				if (ladrillos[j][i].bonus == 1){
-					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
-					printf("%s","SOy bonus");
-				}
-			}
-			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
-				xSpeed = -xSpeed;
-				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
-				ladrillos[j][i].active = false;
-				}
-				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
-				// verificamos si la pelota choco contra ladrillo bonus
-				if (ladrillos[j][i].bonus == 1){
-					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
-					printf("%s","SOy bonus");
-				}
-			}
-			else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
-				xSpeed = -xSpeed;
-				if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
-				ladrillos[j][i].active = false;
-				}
-				ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
-				// verificamos si la pelota choco contra ladrillo bonus
-				if (ladrillos[j][i].bonus == 1){
-					soltarBonus(ladrillos[j][i].xneg,ladrillos[j][i].yneg);
-					printf("%s","SOy bonus");
-				}
-			}
 
+				if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-0.5 <= ballY && ladrillos[j][i].yneg >= ballY) ){
+					ySpeed = -ySpeed;
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+
+				}
+				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+0.5 >= ballY) ){
+					ySpeed = -ySpeed;
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+
+
+				}
+				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+0.5 >= ballX) ){
+					xSpeed = -xSpeed;
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+
+				}
+				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-0.5 <= ballX && ladrillos[j][i].xneg >= ballX) ){
+					xSpeed = -xSpeed;
+					if ((ladrillos[j][i].breakable == 0) || ((ladrillos[j][i].breakable == 1) && (ladrillos[j][i].counter == 1))){
+						ladrillos[j][i].active = false;
+					}
+					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
+
+				}
+				int w;
+				// verificamos si la pelota choco contra ladrillo bonus
+				if (!(ladrillos[j][i].bonusAct) && !(ladrillos[j][i].active) && ladrillos[j][i].bonus > 0  && (ladrillos[j][i].counter == 1 || (ladrillos[j][i].breakable == 1 && ladrillos[j][i].counter == 2))){
+					cout<<"Be free, bonus "<<ladrillos[j][i].bonus<<"\n";
+					ladrillos[j][i].bonusAct=true;
+				}
 			}
 		}
 	}
@@ -377,11 +517,11 @@ void chocarLadrillos(){
 	// Cambiando los choques. Faltan los otros casos y los de los bloques.
 	if ( ((barraneg-0.5 < ballX && barraneg > ballX)||(barrapos+0.5 > ballX && barrapos < ballX))   && barY+0.5>ballY && ballY>barY ){
 		xSpeed = -xSpeed;
-		printf("BOOM.");
+		//printf("BOOM.");
 	}
 	else if ( ((barraneg-0.5 < ballX && barraneg > ballX)||(barrapos+0.5 > ballX && barrapos < ballX))   && barY+0.5>ballY && ballY>barY ){
 		xSpeed = -xSpeed;
-		printf("BOOM.");
+		//printf("BOOM.");
 	}
 
 }
@@ -393,7 +533,7 @@ void render(){
 	glLoadIdentity();
 	
 	glPushMatrix();
-	 dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
+	 dibujarLadrillos();
 	glPopMatrix();
 	
 	//Dibujar barra
@@ -412,9 +552,10 @@ void render(){
 	glTranslatef(ballX,ballY,0.0f);
 	dibujarPelota();
 	glutSwapBuffers();
+	checkBonus();
 
 	chocarLadrillos();
-	dibujarLadrillos(ladrilloXpos,ladrilloYpos,ladrilloXneg,ladrilloYneg);
+	dibujarLadrillos();
 
 	//Animacion de la bola
 	ballX += xSpeed;
@@ -521,6 +662,7 @@ int windowPosX = 50;
 int windowPosY = 50;
 
 int main (int argc, char** argv) {
+	initBlocks();
 	setSpecials();
 	setBonus();
 	glutInit(&argc, argv);
@@ -542,13 +684,11 @@ int main (int argc, char** argv) {
 
 
 
-	TCHAR pwd[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH,pwd);  
-
-strcat(pwd, "\\mainsound.wav");
-	//printf("%s\n",pwd);
-	//Uncomment for surprises.
-	PlaySound(pwd, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
+	GetCurrentDirectory(MAX_PATH,path);  
+	TCHAR pathm[MAX_PATH];
+	strcpy(pathm,path);  
+	strcat(pathm, "\\mainsound.wav");
+	PlaySound(pathm, NULL, SND_FILENAME|SND_LOOP|SND_ASYNC|SND_NOSTOP );
 	glutMainLoop();
 	return 0;
 }
