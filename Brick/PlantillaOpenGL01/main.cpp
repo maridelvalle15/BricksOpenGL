@@ -22,7 +22,10 @@ GLfloat cBarra = 0;
 GLfloat tam = 4;
 GLfloat ballX = 0.0f;
 GLfloat ballY = 0.0f;
-GLfloat ballXMax, ballXMin, ballYMax, ballYMin; 
+GLfloat ballYMin = -10.5; 
+GLfloat ballXMin=-10.5;
+GLfloat ballXMax=10.5;
+GLfloat ballYMax=10.5;
 GLfloat xSpeed = 0.2f;
 GLfloat ySpeed = 0.1f;
 GLfloat ballCoords[4][2] = {0};
@@ -282,7 +285,30 @@ struct Ladrillo{
 };
 
 
-
+void dibujarParedes(){
+glColor3f(1.0f,0.0,1.0f);
+	glTranslated(0,1,0);
+	glBegin(GL_LINES);
+		//pared izquierda externa
+		glVertex2f(-12,8.5);
+		glVertex2f(-12,-10);
+		//pared izquierda interna
+		glVertex2f(-11,7.5);
+		glVertex2f(-11,-10);
+		//pared derecha externa
+		glVertex2f(12,8.5);
+		glVertex2f(12,-10);
+		//pared derecha interna
+		glVertex2f(11,7.5);
+		glVertex2f(11,-10);
+		//pared arriba externa
+		glVertex2f(12,8.5);
+		glVertex2f(-12,8.5);
+		//pared arriba interna
+		glVertex2f(11,7.5);
+		glVertex2f(-11,7.5);
+	glEnd();
+}
 
 Ladrillo ladrillos[5][7];
 
@@ -321,10 +347,10 @@ void setSpecials(){
 }
 void initBlocks(){
 
-float ladrilloXn = -10.5;
-float ladrilloXp = -8.5;
-float ladrilloYp = 9.0f;
-float ladrilloYn = 8.3f;
+float ladrilloXn = -9.5;
+float ladrilloXp = -7.5;
+float ladrilloYp = 7.0f;
+float ladrilloYn = 6.3f;
 
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
@@ -338,8 +364,8 @@ float ladrilloYn = 8.3f;
 			ladrilloXp += 2.8f;
 		}
 
-		ladrilloXn = -10.5;
-		ladrilloXp = -8.50f;
+		ladrilloXn = -9.5;
+		ladrilloXp = -7.50f;
 		ladrilloYp -= 1.5f;
 		ladrilloYn -= 1.5f;
 	}
@@ -633,9 +659,15 @@ void render(){
 	glLoadIdentity();
 	
 	glPushMatrix();
+		dibujarParedes();
+	glPopMatrix();
+
+	glPushMatrix();
 	 dibujarLadrillos();
 	glPopMatrix();
 	
+
+
 	//Dibujar barra
 	glPushMatrix();
 		//ejesCoordenada(1.0);
@@ -705,10 +737,10 @@ void reshape(GLsizei width, GLsizei height){
 		clipAreaYTop = 10.0 / aspect;
 	}
 	gluOrtho2D(clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop);
-	ballXMin = clipAreaXLeft + ballRadius;
-	ballXMax = clipAreaXRight - ballRadius;
-	ballYMin = clipAreaYBottom + ballRadius;
-	ballYMax = clipAreaYTop - ballRadius;
+	ballXMin=-10.5;
+	ballXMax=10.5;
+	ballYMax=10.5;
+	ballYMin = -10.5;
 }
 
 void MoverBarraDerecha(){
