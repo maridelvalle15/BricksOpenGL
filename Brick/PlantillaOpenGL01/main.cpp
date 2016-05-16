@@ -16,8 +16,18 @@
 
 #include <chrono>
 #include <thread>
+
 using namespace std;
 
+/* Proyecto 2 - Computacion Grafica
+Abr-Jul 2016
+Ultima modificacion: 15/06/16
+autores:
+Marisela del Valle 11-10267
+Nabil J. Marquez   11-10683
+*/
+
+//Inicializadores. 
 #define PI 3.1415926535897932384626433832795
 
 GLfloat ballRadius = 0.3f;
@@ -31,55 +41,65 @@ GLfloat ballXMax=10.5;
 GLfloat ballYMax=7.5;
 GLfloat xSpeed = 0;
 GLfloat ySpeed = 0;
-GLfloat ballCoords[4][2] = {0};
 bool isPause = true;
 TCHAR path[MAX_PATH];
-
+bool defeatedB = false;
+bool victory = false;
+int fCounter = 0;
+bool deS = false;
+bool viS = false; 
 int refreshMillis = 30;
 
-//Projection clipping area
 GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
 
+int max_fila = 7;
+int max_columna = 5;
 
+float ladrilloXneg = -9.5;
+float ladrilloXpos = -7.5;
+float ladrilloYpos = 9.0f;
+float ladrilloYneg = 8.5f;
+
+int specials[5];
+//estructura de los bloques
+struct Ladrillo{
+	Ladrillo() : active(1),breakable(0),bonus(0),counter(0),bonusAct(0),isSpecial(0){}
+	float xpos;
+	float xneg;
+	float ypos;
+	float yneg;
+	bool active;
+	bool breakable;
+	int bonus;
+	int counter;
+	bool bonusAct;
+	bool isSpecial;
+};
+Ladrillo ladrillos[5][7];
+//estrucutra de las particulas de explosion
+struct firework{
+	firework() : x(0),y(0),active(0),exploded(0){}
+	float x;
+	float y;
+	float xs[10];
+	float ys[10];
+	bool active;
+	bool exploded;
+};
+
+firework fireworks[5];
+
+//para convertir a rbg
 float rbg(float i){
 	return i/255;
-}
-
-
-void setBcoords() {
-	/*ballCoords[0][0]=ballX+ballRadius;
-	ballCoords[0][1]=ballY;
-	ballCoords[1][0]=ballX+ballRadius*cos(45);
-	ballCoords[1][1]=ballY+ballRadius*sin(45);
-	ballCoords[2][0]=ballX;
-	ballCoords[2][1]=ballY+ballRadius;
-	ballCoords[3][0]=ballX+ballRadius*sin(135);
-	ballCoords[3][1]=ballY+ballRadius*sin(135);
-	ballCoords[4][0]=-ballX+ballRadius;
-	ballCoords[4][1]=-ballY;
-	ballCoords[5][0]=-ballX+ballRadius*cos(225);
-	ballCoords[5][1]=-ballY+ballRadius*sin(225);
-	ballCoords[6][0]=-ballX;
-	ballCoords[6][1]=-ballY+ballRadius;
-	ballCoords[7][0]=-ballX+ballRadius*cos(315);
-	ballCoords[7][1]=-ballY+ballRadius*sin(315);*/
-
-	ballCoords[0][0]=ballX+ballRadius;
-	ballCoords[0][1]=ballY+ballRadius;
-	ballCoords[1][0]=ballX-ballRadius;
-	ballCoords[1][1]=ballY+ballRadius;
-	ballCoords[2][0]=-ballX-ballRadius;
-	ballCoords[2][1]=-ballY-ballRadius;
-	ballCoords[3][0]=-ballX+ballRadius;
-	ballCoords[3][1]=-ballY-ballRadius;
 }
 
 void initGL(){
 	glClearColor(0.0,0.0,0.0,1.0);
 }
 
+//No usada
 void ejesCoordenada(float w) {
-	
 	glLineWidth(w);
 	glBegin(GL_LINES);
 		glColor3f(1.0,0.0,0.0);
@@ -122,7 +142,7 @@ void dibujarPelota(){
 	glBegin(GL_POLYGON);
 		for(int i =19; i <= 360; i++){
 			if (i>150)
-				glColor3f(rbg(128),rbg(128),rbg(128));
+				glColor3f(rbg(128),rbg(128),0.0);
 			double angle = 2* PI * (i) / 360;
 			double x = cos(angle);
 			double y = sin(angle);
@@ -130,7 +150,7 @@ void dibujarPelota(){
 		}
 	glEnd();
 
-	/*
+	/* //Linea guia de impacto
 	glLineWidth(0.5f);
 	glBegin(GL_LINE_STRIP);
 			glVertex2d(0,0);
@@ -147,7 +167,7 @@ void dibujarPelota(){
 void dibujarBonus(float cx, float cy, int btype){
 	switch (btype)
 	{   //Dibujos diferentes para cada bonus.
-	case(1) : 
+	case(1) :  //Disminución de tamano de la barra
 			  glColor3f(0.0f,191/255,1.0f);
 			  glBegin(GL_POLYGON);
 				glVertex2d(cx+0.3,cy+0.15);
@@ -168,7 +188,7 @@ void dibujarBonus(float cx, float cy, int btype){
 			  glEnd();
 			  glColor3f(0.698f,0.1333f,0.1333f);
 			  break;
-	case(2) : glColor3f(1.0f,1,0.0f);
+	case(2) : glColor3f(1.0f,1,0.0f); //Aumento de velocidad de la pelota
 			  glBegin(GL_TRIANGLES);
 				glVertex2d(cx+0.3,cy+0.2);
 				glVertex2d(cx+0.3,cy-0.2);
@@ -186,7 +206,7 @@ void dibujarBonus(float cx, float cy, int btype){
 			  glEnd();
 			  glColor3f(1.0f,1.0f,0.0f);
 			  break;
-	case(3) : 
+	case(3) :  //Amuento de tamaño de la barra
 			  glColor3f(0.0f,191/255,1.0f);
 			  glBegin(GL_POLYGON);
 				glVertex2d(cx+0.3,cy+0.15);
@@ -220,8 +240,7 @@ void dibujarBonus(float cx, float cy, int btype){
 
 }
 
-
-
+//Con degradado
 void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg, int isSpecial){
 	glPointSize(1.0f);
 	if (isSpecial==1)
@@ -242,24 +261,7 @@ void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos,
 	glEnd();
 }
 
-void defeated(){
-
-
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(rbg(100),rbg(100),rbg(100),1);
-	glBegin(GL_POLYGON);
-		glVertex2f(-13,-13);
-		glVertex2f(-13,13);
-		glVertex2f(13,13);
-		glVertex2f(13,-13);
-
-	glEnd();
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-}
-
+//Con degrado
 void dibujarLadrilloRoto(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
 	glPointSize(1.0f);
 		glColor3f(0,1,rbg(0));
@@ -286,97 +288,30 @@ void dibujarLadrilloRoto(float ladrilloXneg, float ladrilloXpos, float ladrilloY
 		glEnd();
 }
 
-int max_fila = 7;
-int max_columna = 5;
-
-float ladrilloXneg = -9.5;
-float ladrilloXpos = -7.5;
-float ladrilloYpos = 9.0f;
-float ladrilloYneg = 8.5f;
-
-struct Ladrillo{
-	Ladrillo() : active(1),breakable(0),bonus(0),counter(0),bonusAct(0),isSpecial(0){}
-	float xpos;
-	float xneg;
-	float ypos;
-	float yneg;
-	bool active;
-	bool breakable;
-	int bonus;
-	int counter;
-	bool bonusAct;
-	bool isSpecial;
-};
-
-struct firework{
-	firework() : x(0),y(0),active(0),exploded(0){}
-	float x;
-	float y;
-	float xs[10];
-	float ys[10];
-	bool active;
-	bool exploded;
-};
-
-firework fireworks[5];
-
+//Con degradado
 void dibujarParedes(){
 glColor3f(1.0f,0.0,1.0f);
 
 	glTranslated(0,1,0);
 	glBegin(GL_LINE_LOOP);
-		//pared izquierda inferior
 		glVertex2f(-11,-9.5);
-		//glVertex2f(-12,-10);
-		//pared izquierda externa
 		glVertex2f(-12,-9.5);
 		glVertex2f(-12,8.5);
-		//pared arriba externa
-		//glVertex2f(-12,8.5);
 glColor3f(rbg(75),rbg(0),rbg(130));
-
 		glVertex2f(12,8.5);
-		//pared derecha externa
-		//glVertex2f(12,8.5);
 		glVertex2f(12,-9.5);
-		//pared derecha inferior
-		//glVertex2f(12,-10);
 		glVertex2f(11,-9.5);
-		//pared derecha interna
-		//glVertex2f(11,-10);
 		glVertex2f(11,7.5);
-		//pared arriba interna
-		//glVertex2f(11,7.5);
 glColor3f(rbg(186),rbg(85),rbg(211));
 		glVertex2f(-11,7.5);
-		//pared izquierda interna
-		//glVertex2f(-11,7.5);
 		glVertex2f(-11,-9.5);
 
 
 	glEnd();
 }
 
-Ladrillo ladrillos[5][7];
 
-
-// numeros random para escoger ladrillos especiales (dificiles de romper)
-/*int v1 = rand() % 3;
-int v2 = rand() % 4;
-int v3 = rand() % 5;
-int v4 = rand() % 3;
-int v5 = rand() % 6;// v2 in the range 1 to 100*/
-
-
-int specials[5];
-
-// numeros random para escoger ladrillos con bonus
-/*int bonus1 = rand() % 1;
-int bonus2 = rand() % 6;
-int bonus3 = rand() % 4;
-int bonus4 = rand() % 3;
-int bonus5 = rand() % 5;// v2 in the range 1 to 100*/
-
+//Procedimiento que inicializa los bloques, y los las explosiones
 void initBlocks(){
 
 float ladrilloXn = -9.5;
@@ -385,7 +320,7 @@ float ladrilloYp = 7.0f;
 float ladrilloYn = 6.3f;
 int counter = 0;
 time_t t;
-std::srand((unsigned) time(&t));
+std::srand((unsigned) time(&t)); //Posiciones aleatorias de las particulas
 float aux2[10]={0.2,0.15,0.2,0.1,0.3,0.34,0.1,0.05,0.08,0.25};
 
 	for (int j = 0; j < max_columna; j++){
@@ -427,6 +362,7 @@ float aux2[10]={0.2,0.15,0.2,0.1,0.3,0.34,0.1,0.05,0.08,0.25};
 
 }
 
+//define aleatoreamente los bloques especiales
 void setSpecials(){
 
 	//Generando a los bloques especiales
@@ -444,48 +380,52 @@ void setSpecials(){
 
 }
 
-
+//define aleatoreamente los bloques bonus equitativamente
 void setBonus(){
 	//Generando a los bloques bonus y sus valores.
-	int maxBonuses=3;//Cambiar 2 por la cantidad tipos de bonus a tener.
+	int maxBonuses=3;//Cambiar 3 por la cantidad tipos de bonus a tener.
     int aux[35] = {0};
 	int aux2[2] = {0}; 
 	for (int i =0; i<35; i++)
 		aux[i]=i;
-	/*
-{
-    int color;
-    srand ( time(NULL) );
-    color = rand() % 4 + 1; 
-    cout << color;
-    return 0;
-   }*/
 
-    std::random_shuffle(aux, aux + 35);
+	std::random_shuffle(aux, aux + 35);
 	int col, row;
 	int bonC=1;
     for (int i=0; i<6; i++){
 		col = aux[i] / 5;
 		row = aux[i] - col * 5;
-		//time_t t;
-		//std::srand((unsigned) time(&t));
+
 		int myBonus = bonC++;
 		if (bonC>maxBonuses){
 			bonC=1;
 		}
-
 		ladrillos[row][col].bonus=myBonus;
-
-		cout<<i<<"::"<<ladrillos[row][col].bonus<<"--"<<row<<","<<col<<endl;
-		//cin>>col;
 		
 	}
 }
+
+//Verifica si el jugador ha ganado
+void checkVictory(){
+	bool myVict = true;
+	for (int j=0; j<max_columna; j++){
+		for (int i=0; i<max_fila; i++){
+			myVict = myVict && !(ladrillos[j][i].active);
+			if (!(myVict))
+				break;
+		}
+		if (!(myVict))
+			break;
+	}
+	if (myVict)
+		victory=true;
+}
+
+//Dibuja las particulas de explosion
 void dibujarFire(firework f){
 	glColor3f(0,rbg(150),rbg(0));
 
 
-	cout<<"dibujo esa cosa"<<endl;
 	for (int j=0; j<10; j++){
 		if (f.xs[j]!=0 && f.ys[j]!=0){
 			if (j>=5)
@@ -503,6 +443,7 @@ void dibujarFire(firework f){
 	}
 }
 
+//Dibuja los ladrillos segun sea el caso
 void dibujarLadrillos(){
 
 	//Dibujar Bonus
@@ -557,10 +498,10 @@ void dibujarLadrillos(){
 							dibujarFire(fireworks[k]);
 
 							for (int w=0; w<10; w++){
-								if (abs(fireworks[k].xs[w]+fireworks[k].x)>6) {
+								if (abs(fireworks[k].xs[w]+fireworks[k].x)>13) {
 									fireworks[k].xs[w]=0;
 								}
-								if (abs(fireworks[k].ys[w]+fireworks[k].y)>6) {
+								if (abs(fireworks[k].ys[w]+fireworks[k].y)>13) {
 									fireworks[k].ys[w]=0;
 								}
 
@@ -570,10 +511,10 @@ void dibujarLadrillos(){
 							bool isOver=false;
 							for (int w=0; w<10; w++){
 								isOver=isOver && fireworks[k].xs[w]==0 && fireworks[k].ys[w] == 0;
-								if (isOver){
-									fireworks[k].exploded=true;
-									break;
-								}
+							}
+							if (isOver){
+								fireworks[k].exploded=true;
+								break;
 							}
 						}
 					} 
@@ -584,13 +525,98 @@ void dibujarLadrillos(){
 		}
 
 	}
+
+	if (defeatedB){  //Pantalla de derrota
+		if (!(deS)){
+			deS=true;
+			TCHAR defS[MAX_PATH];
+			strcpy(defS,path);  
+			strcat(defS, "\\death.wav");
+			PlaySound(defS, NULL, SND_LOOP|SND_ASYNC| SND_NOSTOP );
+		}
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		fCounter+=1;
+		float xn = -10.5;
+		float xp = 10.5;
+		float yp = 7.5f;
+		float yn = -3.0f;
+		glColor4f(1,1,1,0.5);
+		glBegin(GL_POLYGON);
+			glVertex3d(xn,yp,0.8);
+			glVertex3d(xp,yp,0.8);
+			glVertex3d(xp,yn,0.8);
+			glVertex3d(xn,yn,0.8);
+		glEnd();
+		glColor4f(rbg(139),0,0,1);
+
+		glBegin(GL_LINE_LOOP);
+			glVertex2d(-9,6.5);
+			glVertex2d(-9,1.5);
+			glVertex2d(-9,3.5);
+			glVertex2d(-7,6.5);
+			glVertex2d(-9,3.5);
+			glVertex2d(-7,1.5);
+			glVertex2d(-9,3.5);
+		glEnd();
+		glBegin(GL_LINE_LOOP);
+			glVertex2d(-5,6.5);
+			glVertex2d(-3,6.5);
+			glVertex2d(-3,1.5);
+			glVertex2d(-5,1.5);
+		glEnd();
+		if (fCounter>=2000)
+			exit(0);
+		
+	}
+	if (victory){   //Pantalla de victoria
+		if (!(viS)){
+			viS=true;
+			TCHAR viSS[MAX_PATH];
+			strcpy(viSS,path);  
+			strcat(viSS, "\\win.wav");
+			PlaySound(viSS, NULL, SND_LOOP|SND_ASYNC| SND_NOSTOP );
+		}
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		fCounter+=1;
+		float xn = -10.5;
+		float xp = 10.5;
+		float yp = 7.5f;
+		float yn = -3.0f;
+		glColor4f(1,1,1,0.8);
+		glBegin(GL_POLYGON);
+			glVertex3d(xn,yp,0.8);
+			glVertex3d(xp,yp,0.8);
+			glVertex3d(xp,yn,0.8);
+			glVertex3d(xn,yn,0.8);
+		glEnd();
+		glColor4f(0,1,0,1);
+
+		glBegin(GL_LINE_LOOP);
+			glVertex2d(-9,6.5);
+			glVertex2d(-6,6.5);
+			glVertex2d(-6,1.5);
+			glVertex2d(-9,1.5);
+		glEnd();
+		glBegin(GL_LINE_LOOP);
+			glVertex2d(-5,6.5);
+			glVertex2d(-5,1.5);
+			glVertex2d(-5,3.5);
+			glVertex2d(-3,6.5);
+			glVertex2d(-5,3.5);
+			glVertex2d(-3,1.5);
+			glVertex2d(-5,3.5);
+		glEnd();
+		if (fCounter>=2000)
+			exit(0);
+		
+	}
+
 }
 
+//Verifica si la barra atrapa a un bonus cayendo.
 void checkBonus(){
-
-
-
-
 	//Atraparlos
 	GLfloat barY = -9.0;
 	GLfloat barraneg = cBarra-tam/2;
@@ -612,16 +638,13 @@ void checkBonus(){
 				{
 				case(1):
 					tam-= tam * 15 / 100;
-					cout<<"Menos tamaño"<<endl;
 					break;
 				case(2):
 					xSpeed+= xSpeed * 40 / 100;
 					ySpeed+= ySpeed * 40 / 100;
-					cout<<"Más velocidad"<<endl;
 					break;
 				case(3):
 					tam+= tam * 15 / 100;
-					cout<<"Más Tamaño"<<endl;
 					break;
 				default:
 					break;
@@ -632,6 +655,7 @@ void checkBonus(){
 
 }
 
+//Verifica si hubo algun impacto con algun lateral de un bloque o sus esquinas.
 void chocarLadrillos(){
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
@@ -805,12 +829,11 @@ void chocarLadrillos(){
 				if (hasHit){
 					TCHAR h1[MAX_PATH];
 					strcpy(h1,path);  
-					strcat(h1, "\\hit1.wav");
+					strcat(h1, "\\hit1.wav"); //Impacto con bloque
 					PlaySound(h1, NULL, SND_ASYNC );
 				}
 				// verificamos si la pelota choco contra ladrillo bonus
 				if (!(ladrillos[j][i].bonusAct) && !(ladrillos[j][i].active) && ladrillos[j][i].bonus > 0  && (ladrillos[j][i].counter == 1 || (ladrillos[j][i].breakable == 1 && ladrillos[j][i].counter == 2))){
-					cout<<"Be free, bonus "<<ladrillos[j][i].bonus<<"\n";
 					ladrillos[j][i].bonusAct=true;
 				}
 			}
@@ -820,10 +843,11 @@ void chocarLadrillos(){
 
 
 }
+
+//Chequea impacto con laterales y esquinas de la barra
 void barHit(){
 	//Impacto contra la barra.
 
-	//ballCoords;
 	GLfloat barY = -9.0;
 	GLfloat barraneg = cBarra-tam/2;
 	GLfloat barrapos = cBarra+tam/2;
@@ -832,7 +856,6 @@ void barHit(){
 	//Esquinas
 	if (barrapos <= ballX-ballRadius && barrapos+2*ballRadius >= ballX && barY+2*ballRadius >= ballY && barY <= ballY-ballRadius){
 		hasHit2=true;
-		printf("ESQUINA 1");
 		if (xSpeed < 0 && ySpeed < 0){
 			xSpeed=-xSpeed;
 			ySpeed=-ySpeed;
@@ -843,12 +866,10 @@ void barHit(){
 		else if (xSpeed > 0 && ySpeed < 0){  
 			ySpeed=-ySpeed;
 		}
-		else {		printf("AAAAAAAAAAAAAAAA");
-} //> < no tiene sentido.
+		else {;} //> < no tiene sentido.
 	}
 	else if (barraneg >= ballX+ballRadius && barraneg-2*ballRadius <= ballX && barY+2*ballRadius >= ballY && barY <= ballY-ballRadius){
 		hasHit2=true;
-		printf("ESQUINA 2");
 		if (xSpeed < 0 && ySpeed < 0){
 			ySpeed=-ySpeed;
 		}
@@ -859,62 +880,46 @@ void barHit(){
 			xSpeed=-xSpeed;
 			ySpeed=-ySpeed;
 		}
-		else {		printf("AAAAAAAAAAAAAAAA");
-} //< > no tiene sentido.
+		else {;} //< > no tiene sentido.
 	}else if (barraneg <= ballX && barrapos >= ballX  && barY<=ballY-ballRadius && ballY<barY+2*ballRadius && ySpeed<0 ){
-		printf("CASO1\n");
 			ySpeed = -ySpeed;
 			hasHit2=true;
 	}
 	else if ( barraneg >= ballX+ballRadius && barraneg-2*ballRadius <= ballX   && barY-2*ballRadius<=ballY && ballY<=barY+2*ballRadius && xSpeed>0 ){
-		printf("CASO2\n");
 		xSpeed = -xSpeed;
 		hasHit2=true;
 		//printf("BOOM.");
 	}else if ( barrapos < ballX-ballRadius && barrapos+2*ballRadius > ballX   && barY-2*ballRadius<=ballY && ballY<=barY+2*ballRadius && xSpeed<0 ){
-		printf("CASO3\n");
 		xSpeed = -xSpeed;
 		hasHit2=true;
 	}
-	else {
-		/*for (int i=0; i<4; i++){
-			int x1 = ballCoords[i][0];
-			int y1 = ballCoords[i][1];
-			int x2 = ballCoords[4-i][0];
-			int y2 = ballCoords[i+1][1];*/
-			
-
-		}
 
 
 	if (hasHit2){
 		TCHAR h2[MAX_PATH];
 		strcpy(h2,path);  
-		strcat(h2, "\\hit2.wav");
-		PlaySound(h2, NULL, SND_ASYNC );
+a		PlaySound(h2, NULL, SND_ASYNC );
 	}
 }
 
 
+//Render principal
 void render(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
-	setBcoords();
 	glLoadIdentity();
-	
+	checkVictory();
 	glPushMatrix();
-		dibujarParedes();
+		dibujarParedes(); //Bordes de la pantalla
 	glPopMatrix();
 
 	glPushMatrix();
-	 dibujarLadrillos();
+	 dibujarLadrillos(); //Dibuja los ladrillos y hace ciertas comprobaciones al respecto (como bonus y similares).
 	glPopMatrix();
 	
-
-
 	//Dibujar barra
 	glPushMatrix();
-		//ejesCoordenada(1.0);
+		//ejesCoordenada(1.0);   //Descomentar para obtener eje.
 		glLineWidth(30.0f);
 		glPointSize(8.0f);
 		glTranslatef(0.0f, 0.0f, 0.0f);
@@ -934,7 +939,7 @@ void render(){
 	dibujarLadrillos();
 
 	//Animacion de la bola
-	ballX += xSpeed;
+	ballX += xSpeed;      
 	ballY += ySpeed;
 	//Chequeamos los bordes
 	if (ballX > ballXMax){
@@ -949,13 +954,14 @@ void render(){
 		ballY = ballYMax;
 		ySpeed = -ySpeed;
 	}
-	else if (ballY < ballYMin){
+	else if (ballY < ballYMin){    //En caso de perder, realiza las accioens adecuadas.
 		ballY = -9.0f+ballRadius;
 		ballX = cBarra;
 		isPause = true;
 		xSpeed=0;
 		ySpeed=0;
-		defeated();
+		if (!(victory))
+			defeatedB=true;
 	}
 
 
@@ -1005,9 +1011,10 @@ void MoverBarraIzquierda(){
 		ballX=cBarra;
 }
 
-//Activamos teclas para seleccionar y rotar
+//Activamos teclas para seleccionar, rotar y soltar la pelota (de ser posible).
 void keyboard(unsigned char key, int x, int y)
 	{
+		if (!(defeatedB) && !(victory)){
 	switch(key) {
 	case'D':
 	case'd':
@@ -1028,6 +1035,7 @@ void keyboard(unsigned char key, int x, int y)
 	default:
 	break;
 	}
+	}
 	/*	glutPostRedisplay(); /* this redraws the scene without 
 	waiting for the display callback so that any changes appear 
 	instantly */
@@ -1046,9 +1054,10 @@ int windowPosX = 50;
 int windowPosY = 50;
 
 int main (int argc, char** argv) {
-	setSpecials();
-	initBlocks();
-	setBonus();
+	//Inicializadores
+	setSpecials(); //Bloques especiales.
+	initBlocks();  //Coordenadas de bloques y explosiones.
+	setBonus();    //Bloques con bonus.
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);
 	glutInitWindowSize(windowWidth,windowHeight);
@@ -1060,19 +1069,14 @@ int main (int argc, char** argv) {
 	//funcion para activar teclado
 	glutKeyboardFunc(keyboard);
 	initGL();
-	/*GLenum err = glewInit();
-	if (GLEW_OK != err) {
-		fprintf(stderr, "GLEW error");
-		return 1;
-	}*/
 
 
-
+	//Tema de inicio
 	GetCurrentDirectory(MAX_PATH,path);  
 	TCHAR pathm[MAX_PATH];
 	strcpy(pathm,path);  
 	strcat(pathm, "\\mainsound.wav");
-	PlaySound(pathm, NULL, SND_LOOP|SND_ASYNC| SND_NOSTOP );
+	PlaySound(pathm, NULL, SND_LOOP|SND_ASYNC );
 	glutMainLoop();
 	return 0;
 }

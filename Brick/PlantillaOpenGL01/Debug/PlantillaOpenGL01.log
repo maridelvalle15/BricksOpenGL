@@ -1,47 +1,56 @@
-﻿Build started 15/5/2016 10:03:49 p. m..
+﻿Build started 15/5/2016 11:43:55 p. m..
      1>Project "C:\Users\nabil\Desktop\BricksOpenGL\Brick\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\dev\opengl\freeglut\include /I"C:\dev\opengl\glew-1.7.0\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(93): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(100): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(100): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(101): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(101): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(103): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(103): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(104): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(104): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(106): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(106): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(107): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(107): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(109): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(109): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(110): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(110): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(275): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(106): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(113): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(113): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(114): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(114): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(116): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(116): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(117): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(117): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(119): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(119): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(120): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(120): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(122): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(122): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(123): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(123): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(270): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(271): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(272): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
      1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(276): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
      1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(277): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(281): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(282): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(283): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(389): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(606): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(278): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(317): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(526): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(607): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(527): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(807): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(569): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(808): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(570): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(892): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(580): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(625): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(893): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(626): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(1073): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(824): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(1074): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(825): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(893): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(894): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(1071): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>c:\users\nabil\desktop\bricksopengl\brick\plantillaopengl01\main.cpp(1072): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : see declaration of 'strcat'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\nabil\Desktop\BricksOpenGL\Brick\Debug\Brick.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /LIBPATH:C:\dev\opengl\freeglut\lib /LIBPATH:"C:\dev\opengl\glew-1.7.0\lib" glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\nabil\Desktop\BricksOpenGL\Brick\Debug\Brick.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\nabil\Desktop\BricksOpenGL\Brick\Debug\Brick.lib" /MACHINE:X86 Debug\main.obj
@@ -50,4 +59,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.47
+Time Elapsed 00:00:02.25
