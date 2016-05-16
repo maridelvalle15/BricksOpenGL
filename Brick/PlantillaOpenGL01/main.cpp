@@ -13,6 +13,9 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
+
+#include <chrono>
+#include <thread>
 using namespace std;
 
 #define PI 3.1415926535897932384626433832795
@@ -20,21 +23,27 @@ using namespace std;
 GLfloat ballRadius = 0.3f;
 GLfloat cBarra = 0;
 GLfloat tam = 4;
-GLfloat ballX = 0.0f;
-GLfloat ballY = 0.0f;
+GLfloat ballX = cBarra;
+GLfloat ballY = -9.0f+ballRadius;
 GLfloat ballYMin = -10.5; 
 GLfloat ballXMin=-10.5;
 GLfloat ballXMax=10.5;
 GLfloat ballYMax=7.5;
-GLfloat xSpeed = 0.25f;
-GLfloat ySpeed = 0.15f;
+GLfloat xSpeed = 0;
+GLfloat ySpeed = 0;
 GLfloat ballCoords[4][2] = {0};
+bool isPause = true;
 TCHAR path[MAX_PATH];
 
 int refreshMillis = 30;
 
 //Projection clipping area
 GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
+
+
+float rbg(float i){
+	return i/255;
+}
 
 
 void setBcoords() {
@@ -112,12 +121,16 @@ void ejesCoordenada(float w) {
 void dibujarPelota(){
 	glBegin(GL_POLYGON);
 		for(int i =19; i <= 360; i++){
+			if (i>150)
+				glColor3f(rbg(128),rbg(128),rbg(128));
 			double angle = 2* PI * (i) / 360;
 			double x = cos(angle);
 			double y = sin(angle);
 			glVertex2d(x*ballRadius,y*ballRadius);
 		}
 	glEnd();
+
+	/*
 	glLineWidth(0.5f);
 	glBegin(GL_LINE_STRIP);
 			glVertex2d(0,0);
@@ -128,7 +141,7 @@ void dibujarPelota(){
 				y=ySpeed*1000;
 			glVertex2d(x,y);
 	glEnd();
-	glLineWidth(3.0f);
+	glLineWidth(3.0f);*/
 }
 
 void dibujarBonus(float cx, float cy, int btype){
@@ -207,9 +220,6 @@ void dibujarBonus(float cx, float cy, int btype){
 
 }
 
-float rbg(float i){
-	return i/255;
-}
 
 
 void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg, int isSpecial){
@@ -230,6 +240,24 @@ void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos,
 		glVertex2f(ladrilloXpos,ladrilloYneg);
 
 	glEnd();
+}
+
+void defeated(){
+
+
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(rbg(100),rbg(100),rbg(100),1);
+	glBegin(GL_POLYGON);
+		glVertex2f(-13,-13);
+		glVertex2f(-13,13);
+		glVertex2f(13,13);
+		glVertex2f(13,-13);
+
+	glEnd();
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
 }
 
 void dibujarLadrilloRoto(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
@@ -922,10 +950,12 @@ void render(){
 		ySpeed = -ySpeed;
 	}
 	else if (ballY < ballYMin){
-		ballY = 0.0f;
-		ballX = 0.0f;
-		xSpeed = 0.25f;
-		ySpeed = 0.15f;
+		ballY = -9.0f+ballRadius;
+		ballX = cBarra;
+		isPause = true;
+		xSpeed=0;
+		ySpeed=0;
+		defeated();
 	}
 
 
@@ -963,12 +993,16 @@ void MoverBarraDerecha(){
 	if (cBarra+tam/2 <= ballXMax){
 	cBarra += 0.5;
 	}
+	if (isPause)
+		ballX=cBarra;
 }
 
 void MoverBarraIzquierda(){
 	if (cBarra-tam/2 >= ballXMin){
 	cBarra -= 0.5;
 	}
+	if (isPause)
+		ballX=cBarra;
 }
 
 //Activamos teclas para seleccionar y rotar
@@ -986,7 +1020,11 @@ void keyboard(unsigned char key, int x, int y)
 	case'b':
 		MoverBarraIzquierda();
 	break;
-
+	case 32: 
+			xSpeed = 0.25f;
+			ySpeed = 0.15f;
+			isPause=false;
+			break;
 	default:
 	break;
 	}
