@@ -26,8 +26,8 @@ GLfloat ballYMin = -10.5;
 GLfloat ballXMin=-10.5;
 GLfloat ballXMax=10.5;
 GLfloat ballYMax=7.5;
-GLfloat xSpeed = 0.3f;
-GLfloat ySpeed = 0.2f;
+GLfloat xSpeed = 0.25f;
+GLfloat ySpeed = 0.15f;
 GLfloat ballCoords[4][2] = {0};
 TCHAR path[MAX_PATH];
 
@@ -284,6 +284,18 @@ struct Ladrillo{
 	bool bonusAct;
 };
 
+struct firework{
+	firework() : x(0),y(0),active(0),exploded(0){}
+	float x;
+	float y;
+	float xs[10];
+	float ys[10];
+	bool active;
+	bool exploded;
+};
+
+firework fireworks[5];
+
 float rbg(float i){
 	return i/255;
 }
@@ -294,10 +306,10 @@ glColor3f(1.0f,0.0,1.0f);
 	glTranslated(0,1,0);
 	glBegin(GL_LINE_LOOP);
 		//pared izquierda inferior
-		glVertex2f(-11,-10);
+		glVertex2f(-11,-9.5);
 		//glVertex2f(-12,-10);
 		//pared izquierda externa
-		glVertex2f(-12,-10);
+		glVertex2f(-12,-9.5);
 		glVertex2f(-12,8.5);
 		//pared arriba externa
 		//glVertex2f(-12,8.5);
@@ -306,10 +318,10 @@ glColor3f(rbg(75),rbg(0),rbg(130));
 		glVertex2f(12,8.5);
 		//pared derecha externa
 		//glVertex2f(12,8.5);
-		glVertex2f(12,-10);
+		glVertex2f(12,-9.5);
 		//pared derecha inferior
 		//glVertex2f(12,-10);
-		glVertex2f(11,-10);
+		glVertex2f(11,-9.5);
 		//pared derecha interna
 		//glVertex2f(11,-10);
 		glVertex2f(11,7.5);
@@ -319,7 +331,7 @@ glColor3f(rbg(186),rbg(85),rbg(211));
 		glVertex2f(-11,7.5);
 		//pared izquierda interna
 		//glVertex2f(-11,7.5);
-		glVertex2f(-11,-10);
+		glVertex2f(-11,-9.5);
 
 
 	glEnd();
@@ -354,10 +366,27 @@ void setSpecials(){
 	time_t t;
 	std::srand((unsigned) time(&t));
 
-    std::random_shuffle(aux, aux + 35);
-    for (int i=0; i<5; i++)
-		specials[i]=aux[i];
+	float aux2[10]={0.2,0.15,0.2,0.1,0.3,0.34,0.1,0.05,0.08,0.25};
 
+    std::random_shuffle(aux, aux + 35);
+
+    for (int i=0; i<5; i++){
+		std::random_shuffle(aux2, aux2 + 10);
+		specials[i]=aux[i];
+		int col = aux[i] / 5;
+		int row = aux[i] - col * 5;
+		fireworks[i].x=ladrillos[row][col].xneg + 0.5f;
+		fireworks[i].y=ladrillos[row][col].yneg + 0.5f;
+
+		for (int j=0; j<10; j++){
+			fireworks[i].xs[j]=aux2[i]+fireworks[i].x;
+		}
+		std::random_shuffle(aux2, aux2 + 10);
+		for (int j=0; j<10; j++){
+			fireworks[i].ys[j]=aux2[i]+fireworks[i].y;
+		}
+
+	}
 
 }
 void initBlocks(){
@@ -422,6 +451,24 @@ void setBonus(){
 		
 	}
 }
+void dibujarFire(firework f){
+	glColor3f(1,1,0);
+
+	cout<<"dibujo esa cosa"<<endl;
+	for (int j=0; j<10; j++){
+		if (f.xs[j]!=0 && f.ys[j]!=0){
+			glBegin(GL_POLYGON);
+				for(int i =19; i <= 360; i++){
+					double angle = 2* PI * (i) / 360;
+					double x = cos(angle);
+					double y = sin(angle);
+					glVertex2d(f.x+x*0.1,f.y+y*0.1);
+				}
+			glEnd();
+			glLineWidth(0.5f);
+		}
+	}
+}
 
 void dibujarLadrillos(){
 
@@ -446,11 +493,12 @@ void dibujarLadrillos(){
 				// ver si es una posicion especial
 				bool isSpecial = false;
 
-				for (int k=0; k<5; k++)
+				for (int k=0; k<5; k++){
 					if (j * 7 + i == specials[k]){
 						isSpecial=true;
 						break;
 					} 
+				}
 
 				if (isSpecial){
 					// Si no ha sido chocado
@@ -466,6 +514,29 @@ void dibujarLadrillos(){
 				else
 					dibujarLadrillo(ladrillos[j][i].xneg,ladrillos[j][i].xpos,ladrillos[j][i].ypos,ladrillos[j][i].yneg,isSpecial);
 			
+			}
+			else {  //Fireworks
+				for (int k=0; k<5; k++){
+					if (j * 7 + i == specials[k]){
+
+						//fireworks
+						if (!(fireworks[k].exploded)){
+							dibujarFire(fireworks[k]);
+							/*for (int w=0; w<10; w++){
+								fireworks[k].xs[w]+=0.1;
+								fireworks[k].ys[w]+=0.1;
+							}*/
+							bool isOver=false;
+							/*for (int w=0; w<10; w++){
+								isOver=isOver || fireworks[k].xs[w]==0 || fireworks[k].ys[w] == 0;
+								if (isOver){
+									break;
+									fireworks[k].exploded=true;
+								}
+							}*/
+						}
+					} 
+				}
 			}
 
 
@@ -532,7 +603,7 @@ void chocarLadrillos(){
 					ladrillos[j][i].ypos <= ballY-ballRadius){
 
 					hasHit=true;
-					printf("ESQUINA 1");
+					printf("ESQUINA 1\n");
 
 					if (xSpeed < 0 && ySpeed < 0){
 						xSpeed=-xSpeed;
@@ -560,7 +631,7 @@ void chocarLadrillos(){
 						 ladrillos[j][i].ypos+2*ballRadius >= ballY &&
 						 ladrillos[j][i].ypos <= ballY-ballRadius){
 					hasHit=true;
-					printf("ESQUINA 2");
+					printf("ESQUINA 2\n");
 					if (xSpeed < 0 && ySpeed < 0){
 						ySpeed=-ySpeed;
 					}
@@ -588,7 +659,7 @@ void chocarLadrillos(){
 					ladrillos[j][i].yneg >= ballY+ballRadius){
 
 					hasHit=true;
-					printf("ESQUINA 4");
+					printf("ESQUINA 4\n");
 
 					if (xSpeed < 0 && ySpeed < 0){
 						xSpeed=-xSpeed;
@@ -616,7 +687,7 @@ void chocarLadrillos(){
 						 ladrillos[j][i].yneg-2*ballRadius <= ballY &&
 						 ladrillos[j][i].yneg >= ballY+ballRadius){
 					hasHit=true;
-					printf("ESQUINA 3");
+					printf("ESQUINA 3\n");
 					if (xSpeed < 0 && ySpeed > 0){
 						ySpeed=-ySpeed;
 					}
@@ -640,6 +711,7 @@ void chocarLadrillos(){
 				}
 
 				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].yneg-ballRadius <= ballY && ladrillos[j][i].yneg >= ballY) ){
+					printf("CasoL 1\n");
 					ySpeed = -ySpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -650,6 +722,7 @@ void chocarLadrillos(){
 					ladrillos[j][i].counter = ladrillos[j][i].counter +1; 
 				}
 				else if ((ladrillos[j][i].xneg < ballX && ladrillos[j][i].xpos > ballX && ladrillos[j][i].ypos <= ballY && ladrillos[j][i].ypos+ballRadius >= ballY) ){
+					printf("CasoL 2\n");
 					ySpeed = -ySpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -662,6 +735,7 @@ void chocarLadrillos(){
 
 				}
 				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xpos <= ballX && ladrillos[j][i].xpos+ballRadius >= ballX) ){
+					printf("CasoL 3\n");
 					xSpeed = -xSpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -674,6 +748,7 @@ void chocarLadrillos(){
 
 				}
 				else if ((ladrillos[j][i].yneg < ballY && ladrillos[j][i].ypos > ballY && ladrillos[j][i].xneg-ballRadius <= ballX && ladrillos[j][i].xneg >= ballX) ){
+					printf("CasoL 4\n");
 					xSpeed = -xSpeed;
 					if (ladrillos[j][i].counter <= 1){
 						hasHit=true;
@@ -836,8 +911,8 @@ void render(){
 	else if (ballY < ballYMin){
 		ballY = 0.0f;
 		ballX = 0.0f;
-		xSpeed = 0.3f;
-		ySpeed = 0.2f;
+		xSpeed = 0.25f;
+		ySpeed = 0.15f;
 	}
 
 
@@ -872,13 +947,13 @@ void reshape(GLsizei width, GLsizei height){
 }
 
 void MoverBarraDerecha(){
-	if (cBarra+tam/2 <= clipAreaXRight){
+	if (cBarra+tam/2 <= ballXMax){
 	cBarra += 0.5;
 	}
 }
 
 void MoverBarraIzquierda(){
-	if (cBarra-tam/2 >= clipAreaXLeft){
+	if (cBarra-tam/2 >= ballXMin){
 	cBarra -= 0.5;
 	}
 }
