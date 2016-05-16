@@ -207,6 +207,10 @@ void dibujarBonus(float cx, float cy, int btype){
 
 }
 
+float rbg(float i){
+	return i/255;
+}
+
 
 void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg, int isSpecial){
 	glPointSize(1.0f);
@@ -214,52 +218,43 @@ void dibujarLadrillo(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos,
 		glColor3f(0.0f,1.0f,0.0f);
 	else if (isSpecial==0)
 		glColor3f(1.0f,0.0f,0.0f);
-	else
-		glColor3f(1.0f,1.0f,0.0f);
 	glLineWidth(3.0f);
-	glBegin(GL_LINES);
-		glVertex2f(ladrilloXneg,ladrilloYneg);
-		glVertex2f(ladrilloXpos,ladrilloYneg);
-		glVertex2f(ladrilloXneg,ladrilloYpos);
-		glVertex2f(ladrilloXpos,ladrilloYpos);
+	glBegin(GL_LINE_LOOP);
 		glVertex2f(ladrilloXneg,ladrilloYneg);
 		glVertex2f(ladrilloXneg,ladrilloYpos);
-		glVertex2f(ladrilloXpos,ladrilloYneg);
+	if (isSpecial==1)
+		glColor3f(0,rbg(100),rbg(0));
+	else if (isSpecial==0)
+		glColor3f(rbg(139),0.0f,0.0f);
 		glVertex2f(ladrilloXpos,ladrilloYpos);
+		glVertex2f(ladrilloXpos,ladrilloYneg);
+
 	glEnd();
 }
 
 void dibujarLadrilloRoto(float ladrilloXneg, float ladrilloXpos, float ladrilloYpos, float ladrilloYneg){
 	glPointSize(1.0f);
-		glColor3f(0.0f,1.0f,0.0f);
+		glColor3f(0,1,rbg(0));
 		glLineWidth(3.0f);
 		float ancho = (ladrilloXpos+ladrilloXneg)/2;
 		float largo = (ladrilloYneg+ladrilloYpos)/2;
-		glBegin(GL_LINES);
-			glVertex2f(ladrilloXneg,ladrilloYneg);
-			glVertex2f(ladrilloXpos,ladrilloYneg);
-			glVertex2f(ladrilloXneg,ladrilloYpos);
-			glVertex2f(ladrilloXpos,ladrilloYpos);
+
+		glBegin(GL_LINE_LOOP);
 			glVertex2f(ladrilloXneg,ladrilloYneg);
 			glVertex2f(ladrilloXneg,ladrilloYpos);
-			glVertex2f(ladrilloXpos,ladrilloYneg);
-			glVertex2f(ladrilloXpos,ladrilloYpos);
+			glColor3f(0,rbg(150),rbg(0));
 
 			glVertex2f(ancho-0.15,ladrilloYpos);
 			glVertex2f(ancho-0.40,largo);
-			glVertex2f(ancho-0.40,largo);
 			glVertex2f(ancho-0.15,ladrilloYneg);
-
-			glVertex2f(ancho+0.35,ladrilloYpos);
-			glVertex2f(ancho+0.10,largo);
-			glVertex2f(ancho+0.10,largo);
+		glEnd();
+		glBegin(GL_LINE_LOOP);
+			glColor3f(0,rbg(100),rbg(0));
 			glVertex2f(ancho+0.35,ladrilloYneg);
-
-			glColor3f(0.0f,0.0f,0.0f);
-			glVertex2f(ancho-0.15,ladrilloYpos);
-			glVertex2f(ancho+0.27,ladrilloYpos);
-			glVertex2f(ancho-0.15,ladrilloYneg);
-			glVertex2f(ancho+0.27,ladrilloYneg);
+			glVertex2f(ancho+0.10,largo);
+			glVertex2f(ancho+0.35,ladrilloYpos);
+			glVertex2f(ladrilloXpos,ladrilloYpos);
+			glVertex2f(ladrilloXpos,ladrilloYneg);
 		glEnd();
 }
 
@@ -272,7 +267,7 @@ float ladrilloYpos = 9.0f;
 float ladrilloYneg = 8.5f;
 
 struct Ladrillo{
-	Ladrillo() : active(1),breakable(0),bonus(0),counter(0),bonusAct(0){}
+	Ladrillo() : active(1),breakable(0),bonus(0),counter(0),bonusAct(0),isSpecial(0){}
 	float xpos;
 	float xneg;
 	float ypos;
@@ -282,6 +277,7 @@ struct Ladrillo{
 	int bonus;
 	int counter;
 	bool bonusAct;
+	bool isSpecial;
 };
 
 struct firework{
@@ -295,10 +291,6 @@ struct firework{
 };
 
 firework fireworks[5];
-
-float rbg(float i){
-	return i/255;
-}
 
 void dibujarParedes(){
 glColor3f(1.0f,0.0,1.0f);
@@ -357,44 +349,16 @@ int bonus3 = rand() % 4;
 int bonus4 = rand() % 3;
 int bonus5 = rand() % 5;// v2 in the range 1 to 100*/
 
-void setSpecials(){
-
-	//Generando a los bloques especiales
-    int aux[35] = {0};
-	for (int i =0; i<35; i++)
-		aux[i]=i;
-	time_t t;
-	std::srand((unsigned) time(&t));
-
-	float aux2[10]={0.2,0.15,0.2,0.1,0.3,0.34,0.1,0.05,0.08,0.25};
-
-    std::random_shuffle(aux, aux + 35);
-
-    for (int i=0; i<5; i++){
-		std::random_shuffle(aux2, aux2 + 10);
-		specials[i]=aux[i];
-		int col = aux[i] / 5;
-		int row = aux[i] - col * 5;
-		fireworks[i].x=ladrillos[row][col].xneg + 0.5f;
-		fireworks[i].y=ladrillos[row][col].yneg + 0.5f;
-
-		for (int j=0; j<10; j++){
-			fireworks[i].xs[j]=aux2[i]+fireworks[i].x;
-		}
-		std::random_shuffle(aux2, aux2 + 10);
-		for (int j=0; j<10; j++){
-			fireworks[i].ys[j]=aux2[i]+fireworks[i].y;
-		}
-
-	}
-
-}
 void initBlocks(){
 
 float ladrilloXn = -9.5;
 float ladrilloXp = -7.5;
 float ladrilloYp = 7.0f;
 float ladrilloYn = 6.3f;
+int counter = 0;
+time_t t;
+std::srand((unsigned) time(&t));
+float aux2[10]={0.2,0.15,0.2,0.1,0.3,0.34,0.1,0.05,0.08,0.25};
 
 	for (int j = 0; j < max_columna; j++){
 		for (int i = 0; i < max_fila; i++){
@@ -403,6 +367,25 @@ float ladrilloYn = 6.3f;
 			ladrillos[j][i].ypos = ladrilloYp;
 			ladrillos[j][i].yneg = ladrilloYn;
 			ladrillos[j][i].active = 1;
+
+			//Para los firework
+			for (int k=0; k<5; k++){
+				if (j * 7 + i == specials[k]){
+					ladrillos[j][i].isSpecial=true;
+					std::random_shuffle(aux2, aux2 + 10);
+					fireworks[k].x=ladrilloXn+0.5f;
+					fireworks[k].y=ladrilloYn+0.5f;
+
+					for (int w=0; w<10; w++){
+						fireworks[k].xs[w]=aux2[w];
+					}
+					std::random_shuffle(aux2, aux2 + 10);
+					for (int w=0; w<10; w++){
+						fireworks[k].ys[w]=aux2[w];
+					}
+					break;
+				} 
+			}
 
 			ladrilloXn += 2.8f;
 			ladrilloXp += 2.8f;
@@ -413,7 +396,26 @@ float ladrilloYn = 6.3f;
 		ladrilloYp -= 1.5f;
 		ladrilloYn -= 1.5f;
 	}
+
 }
+
+void setSpecials(){
+
+	//Generando a los bloques especiales
+    int aux[35] = {0};
+	for (int i =0; i<35; i++)
+		aux[i]=i;
+	time_t t;
+	std::srand((unsigned) time(&t));
+
+
+    std::random_shuffle(aux, aux + 35);
+
+    for (int i=0; i<5; i++)
+		specials[i]=aux[i];
+
+}
+
 
 void setBonus(){
 	//Generando a los bloques bonus y sus valores.
@@ -452,17 +454,20 @@ void setBonus(){
 	}
 }
 void dibujarFire(firework f){
-	glColor3f(1,1,0);
+	glColor3f(0,rbg(150),rbg(0));
+
 
 	cout<<"dibujo esa cosa"<<endl;
 	for (int j=0; j<10; j++){
 		if (f.xs[j]!=0 && f.ys[j]!=0){
+			if (j>=5)
+				glColor3f(0,1,0);
 			glBegin(GL_POLYGON);
 				for(int i =19; i <= 360; i++){
 					double angle = 2* PI * (i) / 360;
 					double x = cos(angle);
 					double y = sin(angle);
-					glVertex2d(f.x+x*0.1,f.y+y*0.1);
+					glVertex2d(f.x+f.xs[j]+x*0.1,f.y+f.ys[j]+y*0.1);
 				}
 			glEnd();
 			glLineWidth(0.5f);
@@ -522,18 +527,26 @@ void dibujarLadrillos(){
 						//fireworks
 						if (!(fireworks[k].exploded)){
 							dibujarFire(fireworks[k]);
-							/*for (int w=0; w<10; w++){
-								fireworks[k].xs[w]+=0.1;
-								fireworks[k].ys[w]+=0.1;
-							}*/
-							bool isOver=false;
-							/*for (int w=0; w<10; w++){
-								isOver=isOver || fireworks[k].xs[w]==0 || fireworks[k].ys[w] == 0;
-								if (isOver){
-									break;
-									fireworks[k].exploded=true;
+
+							for (int w=0; w<10; w++){
+								if (abs(fireworks[k].xs[w]+fireworks[k].x)>6) {
+									fireworks[k].xs[w]=0;
 								}
-							}*/
+								if (abs(fireworks[k].ys[w]+fireworks[k].y)>6) {
+									fireworks[k].ys[w]=0;
+								}
+
+								fireworks[k].xs[w]+=fireworks[k].xs[w]/50;
+								fireworks[k].ys[w]+=fireworks[k].ys[w]/50;
+							}
+							bool isOver=false;
+							for (int w=0; w<10; w++){
+								isOver=isOver && fireworks[k].xs[w]==0 && fireworks[k].ys[w] == 0;
+								if (isOver){
+									fireworks[k].exploded=true;
+									break;
+								}
+							}
 						}
 					} 
 				}
@@ -995,8 +1008,8 @@ int windowPosX = 50;
 int windowPosY = 50;
 
 int main (int argc, char** argv) {
-	initBlocks();
 	setSpecials();
+	initBlocks();
 	setBonus();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);
